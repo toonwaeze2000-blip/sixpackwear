@@ -1,62 +1,1300 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6PACKWEAR — Fashion Platform</title>
+<title>6PACKWEAR — More Than Clothes</title>
+<meta name="description" content="6PACKWEAR — discover complete looks, shop every piece, and build your own style.">
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#080808;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
-a{color:inherit;text-decoration:none}.nav{height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;border-bottom:1px solid #242424;position:sticky;top:0;background:rgba(8,8,8,.94);backdrop-filter:blur(12px);z-index:5}
-.logo{font-weight:900;letter-spacing:2px;font-size:21px}.logo span{font-weight:300;color:#aaa}.navlinks{display:flex;gap:28px;font-size:13px;color:#aaa}.icons{display:flex;gap:18px;font-size:13px}
-.hero{min-height:620px;padding:90px 5vw 70px;display:flex;align-items:center;background:radial-gradient(circle at 70% 35%,#252525 0,#111 35%,#080808 70%)}
-.heroText{max-width:650px}.eyebrow{font-size:11px;letter-spacing:4px;color:#999;text-transform:uppercase}.hero h1{font-size:clamp(54px,8vw,108px);line-height:.88;margin:18px 0;font-weight:900;letter-spacing:-5px}.hero h1 em{font-style:normal;color:#bdbdbd}.hero p{color:#aaa;max-width:470px;line-height:1.7}.btn{display:inline-block;margin-top:25px;background:#f3f3f3;color:#080808;padding:15px 24px;border-radius:2px;font-size:12px;font-weight:800;letter-spacing:1px}
-.section{padding:70px 5vw}.sectionHead{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px}.section h2{font-size:30px;margin:0}.muted{color:#777;font-size:12px}.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.cat{padding:22px 16px;border:1px solid #252525;background:#101010;text-transform:uppercase;font-size:11px;letter-spacing:1px;text-align:center;transition:.2s}.cat:hover{background:#1b1b1b;border-color:#555}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:#111;border:1px solid #222;overflow:hidden}.pic{height:390px;background:linear-gradient(145deg,#303030,#121212);position:relative}.pic:after{content:"6PW";position:absolute;inset:0;display:grid;place-items:center;color:#666;font-weight:900;font-size:46px;letter-spacing:4px}.cardBody{padding:17px}.tag{font-size:9px;letter-spacing:2px;color:#777;text-transform:uppercase}.card h3{font-size:16px;margin:8px 0}.price{color:#bbb;font-size:12px}.look{position:absolute;top:12px;left:12px;background:#080808;padding:7px 9px;font-size:9px;letter-spacing:1px;z-index:1}
-.banner{margin:0 5vw 70px;padding:70px;background:linear-gradient(110deg,#181818,#0b0b0b);border:1px solid #252525}.banner h2{font-size:46px;margin:0 0 10px}.banner p{color:#888}
-footer{border-top:1px solid #222;padding:45px 5vw;color:#777;font-size:11px;display:flex;justify-content:space-between}
-@media(max-width:900px){.navlinks{display:none}.categories{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.pic{height:300px}.hero{min-height:520px}}
-@media(max-width:560px){.nav{height:64px;padding:0 20px}.icons{gap:10px}.hero{padding:65px 20px}.hero h1{letter-spacing:-3px}.section{padding:48px 20px}.categories{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr 1fr;gap:9px}.pic{height:230px}.cardBody{padding:12px}.banner{margin:0 20px 45px;padding:35px 25px}.banner h2{font-size:32px}footer{padding:30px 20px;display:block}}
+:root{
+  --bg:#070707;
+  --panel:#101010;
+  --line:#262626;
+  --text:#f5f5f2;
+  --muted:#9b9b96;
+  --max:1440px;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:Inter,Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.35
+}
+
+button,a{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:30;
+  background:rgba(7,7,7,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+
+.nav{
+  height:74px;
+  max-width:var(--max);
+  margin:auto;
+  padding:0 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px
+}
+
+.logo{
+  font-weight:900;
+  letter-spacing:-.055em;
+  font-size:24px;
+  white-space:nowrap
+}
+
+.logo span{font-weight:400}
+
+.navlinks{
+  display:flex;
+  gap:28px;
+  color:#b9b9b4;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.16em
+}
+
+.navlinks a:hover{color:#fff}
+
+.actions{
+  display:flex;
+  gap:9px;
+  align-items:center
+}
+
+.iconbtn{
+  width:42px;
+  height:42px;
+  border:1px solid var(--line);
+  background:#0e0e0e;
+  color:#fff;
+  border-radius:50%;
+  display:grid;
+  place-items:center
+}
+
+.cart{position:relative}
+
+.cart b{
+  position:absolute;
+  right:-2px;
+  top:-2px;
+  background:#fff;
+  color:#000;
+  width:17px;
+  height:17px;
+  border-radius:50%;
+  font-size:10px;
+  display:grid;
+  place-items:center
+}
+
+.hero{
+  max-width:var(--max);
+  margin:auto;
+  padding:38px 28px 0
+}
+
+.heroGrid{
+  min-height:650px;
+  border:1px solid var(--line);
+  border-radius:26px;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:1fr 1.12fr;
+  background:
+  radial-gradient(circle at 72% 30%,#2a2a28 0,#151514 25%,#0b0b0b 58%,#080808 100%)
+}
+
+.heroCopy{
+  padding:76px 56px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center
+}
+
+.eyebrow{
+  font-size:11px;
+  letter-spacing:.25em;
+  color:#8d8d87;
+  text-transform:uppercase;
+  margin-bottom:20px
+}
+
+.hero h1{
+  font-size:clamp(64px,8vw,128px);
+  line-height:.82;
+  letter-spacing:-.075em;
+  text-transform:uppercase;
+  max-width:650px
+}
+
+.hero h1 em{
+  font-style:normal;
+  color:#8d8d88
+}
+
+.hero p{
+  color:#a4a49f;
+  max-width:470px;
+  margin:30px 0;
+  font-size:14px
+}
+
+.cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:#f4f4ef;
+  color:#070707;
+  border:0;
+  padding:15px 21px;
+  font-weight:800;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  border-radius:3px;
+  width:max-content
+}
+
+.heroVisual{
+  position:relative;
+  min-height:500px;
+  background:
+  linear-gradient(110deg,transparent 0 22%,rgba(255,255,255,.035) 22.1% 22.4%,transparent 22.5%),
+  radial-gradient(circle at 55% 48%,#373735 0,#20201f 18%,#10100f 49%,#080808 75%)
+}
+
+.heroVisual:before{
+  content:"6";
+  position:absolute;
+  font-size:540px;
+  line-height:.8;
+  font-weight:900;
+  letter-spacing:-.1em;
+  right:7%;
+  top:13%;
+  color:rgba(255,255,255,.045)
+}
+
+.model{
+  position:absolute;
+  right:13%;
+  bottom:0;
+  width:56%;
+  height:83%;
+  border-radius:46% 46% 10px 10px;
+  background:
+  linear-gradient(90deg,#111 0 16%,#222 16% 37%,#deded8 37% 64%,#191919 64% 100%);
+  clip-path:polygon(
+    34% 0,
+    66% 0,
+    78% 12%,
+    88% 42%,
+    100% 100%,
+    0 100%,
+    12% 42%,
+    22% 12%
+  )
+}
+
+.model:after{
+  content:"";
+  position:absolute;
+  left:43%;
+  top:9%;
+  width:15%;
+  height:11%;
+  border-radius:50%;
+  background:#171717
+}
+
+.section{
+  max-width:var(--max);
+  margin:auto;
+  padding:90px 28px 0
+}
+
+.sectionHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:28px
+}
+
+.kicker{
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#7f7f7a
+}
+
+h2{
+  font-size:clamp(38px,5vw,70px);
+  line-height:.9;
+  letter-spacing:-.06em;
+  text-transform:uppercase;
+  margin-top:9px
+}
+
+.viewall{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:#aaa
+}
+
+.filters{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding-bottom:4px;
+  margin-bottom:20px
+}
+
+.filter{
+  white-space:nowrap;
+  background:#0c0c0c;
+  border:1px solid var(--line);
+  color:#aaa;
+  padding:11px 14px;
+  border-radius:999px;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.12em
+}
+
+.filter.active,
+.filter:hover{
+  background:#eee;
+  color:#080808;
+  border-color:#eee
+}
+
+.looks{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px
+}
+
+.look{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+  transition:.25s transform,.25s border-color
+}
+
+.look:hover{
+  transform:translateY(-4px);
+  border-color:#4a4a47
+}
+
+.lookImg{
+  aspect-ratio:3/4;
+  background:linear-gradient(145deg,#252523,#0d0d0d);
+  position:relative;
+  overflow:hidden
+}
+
+.lookImg .art{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-size:100px;
+  font-weight:900;
+  color:rgba(255,255,255,.07)
+}
+
+.look:nth-child(2) .lookImg{
+  background:linear-gradient(145deg,#3b3a36,#121212)
+}
+
+.look:nth-child(3) .lookImg{
+  background:linear-gradient(145deg,#191919,#45433d)
+}
+
+.look:nth-child(4) .lookImg{
+  background:linear-gradient(145deg,#292928,#0b0b0b)
+}
+
+.badge{
+  position:absolute;
+  left:12px;
+  top:12px;
+  background:#f2f2ed;
+  color:#090909;
+  border-radius:3px;
+  padding:7px 9px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase
+}
+
+.lookInfo{padding:16px}
+
+.lookInfo h3{
+  font-size:16px;
+  letter-spacing:-.02em
+}
+
+.lookInfo p{
+  font-size:11px;
+  color:#858580;
+  margin-top:5px
+}
+
+.lookBottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:16px
+}
+
+.price{
+  font-weight:800;
+  font-size:13px
+}
+
+.smallbtn{
+  border:1px solid #333;
+  background:transparent;
+  color:#eee;
+  padding:9px 11px;
+  border-radius:3px;
+  font-size:9px;
+  letter-spacing:.12em;
+  text-transform:uppercase
+}
+
+.smallbtn:hover{
+  background:#fff;
+  color:#000
+}
+
+.categories{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px
+}
+
+.cat{
+  min-height:180px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:linear-gradient(145deg,#161615,#0b0b0b);
+  transition:.2s
+}
+
+.cat:hover{
+  background:#171716;
+  transform:translateY(-3px)
+}
+
+.cat strong{
+  font-size:30px;
+  letter-spacing:-.06em
+}
+
+.cat span{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  color:#777
+}
+
+.banner{
+  margin-top:90px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:52px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:30px;
+  background:
+  radial-gradient(circle at 78% 50%,#2a2a27,#0d0d0d 48%)
+}
+
+.banner h2{max-width:700px}
+
+.banner p{
+  color:#91918c;
+  max-width:390px;
+  font-size:13px;
+  margin-top:15px
+}
+
+.news{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+
+.newsCard{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:26px;
+  background:#0d0d0d;
+  min-height:220px
+}
+
+.newsCard .num{
+  font-size:12px;
+  color:#6f6f6a
+}
+
+.newsCard h3{
+  font-size:25px;
+  letter-spacing:-.04em;
+  margin:55px 0 12px
+}
+
+.newsCard p{
+  font-size:12px;
+  color:#777
+}
+
+.footer{
+  max-width:var(--max);
+  margin:90px auto 0;
+  padding:50px 28px 30px;
+  border-top:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:30px;
+  color:#777;
+  font-size:11px
+}
+
+.footer .logo{color:#fff}
+
+.drawer{
+  position:fixed;
+  inset:0;
+  z-index:60;
+  display:none
+}
+
+.drawer.open{display:block}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.65)
+}
+
+.panel{
+  position:absolute;
+  right:0;
+  top:0;
+  height:100%;
+  width:min(430px,100%);
+  background:#0c0c0c;
+  border-left:1px solid var(--line);
+  padding:28px;
+  display:flex;
+  flex-direction:column
+}
+
+.panelHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+  padding-bottom:20px
+}
+
+.panelHead h3{
+  text-transform:uppercase;
+  font-size:13px;
+  letter-spacing:.16em
+}
+
+.close{
+  background:none;
+  border:0;
+  color:#fff;
+  font-size:26px
+}
+
+.cartItems{
+  padding:22px 0;
+  display:grid;
+  gap:12px
+}
+
+.cartItem{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:15px;
+  border:1px solid var(--line);
+  border-radius:10px
+}
+
+.cartItem small{
+  color:#777;
+  display:block;
+  margin-top:4px
+}
+
+.total{
+  margin-top:auto;
+  border-top:1px solid var(--line);
+  padding-top:20px;
+  display:flex;
+  justify-content:space-between;
+  font-weight:800
+}
+
+.empty{
+  color:#777;
+  font-size:13px;
+  padding:20px 0
+}
+
+@media(max-width:900px){
+
+  .navlinks{display:none}
+
+  .heroGrid{
+    grid-template-columns:1fr
+  }
+
+  .heroCopy{
+    padding:55px 30px
+  }
+
+  .heroVisual{
+    min-height:420px
+  }
+
+  .looks{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  .categories{
+    grid-template-columns:repeat(2,1fr)
+  }
+}
+
+@media(max-width:560px){
+
+  .nav{
+    padding:0 16px
+  }
+
+  .hero,
+  .section{
+    padding-left:16px;
+    padding-right:16px
+  }
+
+  .heroGrid{
+    border-radius:18px
+  }
+
+  .hero h1{
+    font-size:66px
+  }
+
+  .heroVisual{
+    min-height:330px
+  }
+
+  .model{
+    right:10%;
+    width:66%
+  }
+
+  .looks{
+    grid-template-columns:1fr 1fr;
+    gap:8px
+  }
+
+  .lookInfo{
+    padding:12px
+  }
+
+  .lookInfo h3{
+    font-size:14px
+  }
+
+  .categories{
+    grid-template-columns:1fr 1fr
+  }
+
+  .cat{
+    min-height:145px
+  }
+
+  .cat strong{
+    font-size:23px
+  }
+
+  .banner{
+    padding:28px;
+    display:block
+  }
+
+  .banner .cta{
+    margin-top:25px
+  }
+
+  .news{
+    grid-template-columns:1fr
+  }
+
+  .footer{
+    display:block
+  }
+
+  .footer div+div{
+    margin-top:15px
+  }
+}
 </style>
 </head>
+
 <body>
-<header class="nav">
-  <div class="logo">6PACK<span>WEAR</span></div>
-  <nav class="navlinks"><a href="#looks">Looks</a><a href="#categories">Categories</a><a href="#">New Drops</a><a href="#">About</a></nav>
-  <div class="icons">⌕　♡　🛒</div>
-</header>
 
-<section class="hero">
- <div class="heroText">
-  <div class="eyebrow">Fashion / Lifestyle / 2026</div>
-  <h1>WEAR<br><em>YOUR</em><br>LOOK.</h1>
-  <p>Discover complete outfits, shop every piece separately, or take the entire look. From luxury to everyday essentials — curated in one place.</p>
-  <a class="btn" href="#looks">EXPLORE LOOKS →</a>
- </div>
-</section>
+<header class="header">
+<nav class="nav">
 
-<section class="section" id="categories">
- <div class="sectionHead"><div><div class="muted">EXPLORE</div><h2>Shop by style</h2></div><div class="muted">ALL CATEGORIES</div></div>
- <div class="categories">
-  <div class="cat">Luxury</div><div class="cat">Streetwear</div><div class="cat">Casual</div><div class="cat">Sport</div><div class="cat">Affordable</div><div class="cat">Sneakers</div>
- </div>
-</section>
+<a class="logo" href="#">
+6PACK<span>WEAR</span>
+</a>
 
-<section class="section" id="looks">
- <div class="sectionHead"><div><div class="muted">CURATED FOR YOU</div><h2>Featured Looks</h2></div><div class="muted">VIEW ALL →</div></div>
- <div class="grid">
-  <article class="card"><div class="pic"><div class="look">LOOK 001</div></div><div class="cardBody"><div class="tag">Streetwear</div><h3>Urban Core</h3><div class="price">$189 · Shop full look</div></div></article>
-  <article class="card"><div class="pic"><div class="look">LOOK 002</div></div><div class="cardBody"><div class="tag">Luxury</div><h3>Monochrome Night</h3><div class="price">$740 · Shop full look</div></div></article>
-  <article class="card"><div class="pic"><div class="look">LOOK 003</div></div><div class="cardBody"><div class="tag">Casual</div><h3>Daily Essential</h3><div class="price">$129 · Shop full look</div></div></article>
-  <article class="card"><div class="pic"><div class="look">LOOK 004</div></div><div class="cardBody"><div class="tag">Sport</div><h3>After Hours</h3><div class="price">$165 · Shop full look</div></div></article>
- </div>
-</section>
-
-<div class="banner">
- <div class="eyebrow">THE 6PACKWEAR CONCEPT</div>
- <h2>ONE LOOK.<br>EVERY PIECE.</h2>
- <p>Open a look. Remove what you don't want. Add what you love. Buy one item or the whole outfit.</p>
+<div class="navlinks">
+<a href="#looks">Looks</a>
+<a href="#categories">Categories</a>
+<a href="#mylook">My Look</a>
+<a href="#about">About</a>
 </div>
 
-<footer><div>© 2026 6PACKWEAR</div><div>MORE THAN CLOTHES.</div></footer>
+<div class="actions">
+
+<button class="iconbtn" aria-label="Search" onclick="alert('Search is coming next.')">
+⌕
+</button>
+
+<button class="iconbtn cart" aria-label="Cart" onclick="openCart()">
+Bag
+<span id="count" class="cart">
+<b>0</b>
+</span>
+</button>
+
+</div>
+
+</nav>
+</header>
+
+
+<main>
+
+<section class="hero">
+
+<div class="heroGrid">
+
+<div class="heroCopy">
+
+<div class="eyebrow">
+Fashion discovery / 001
+</div>
+
+<h1>
+Wear<br>
+<em>Your</em><br>
+Look.
+</h1>
+
+<p>
+Complete outfits, individual pieces and a faster way to find your style.
+Discover the look. Take the pieces. Make it yours.
+</p>
+
+<a class="cta" href="#looks">
+Explore looks&nbsp; →
+</a>
+
+</div>
+
+<div class="heroVisual">
+<div class="model"></div>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section" id="looks">
+
+<div class="sectionHead">
+
+<div>
+<div class="kicker">Curated for you</div>
+<h2>Featured looks</h2>
+</div>
+
+<a class="viewall" href="#looks">
+View all →
+</a>
+
+</div>
+
+
+<div class="filters">
+
+<button class="filter active" onclick="filterLooks('all',this)">
+All
+</button>
+
+<button class="filter" onclick="filterLooks('streetwear',this)">
+Streetwear
+</button>
+
+<button class="filter" onclick="filterLooks('minimal',this)">
+Minimal
+</button>
+
+<button class="filter" onclick="filterLooks('sport',this)">
+Sport
+</button>
+
+<button class="filter" onclick="filterLooks('premium',this)">
+Premium
+</button>
+
+<button class="filter" onclick="filterLooks('affordable',this)">
+Affordable
+</button>
+
+</div>
+
+
+<div class="looks" id="lookGrid">
+
+<article class="look" data-cat="streetwear premium">
+
+<div class="lookImg">
+
+<div class="art">01</div>
+
+<span class="badge">
+New look
+</span>
+
+</div>
+
+<div class="lookInfo">
+
+<h3>MONOCHROME 01</h3>
+
+<p>
+Oversized tee · cargo · runners
+</p>
+
+<div class="lookBottom">
+
+<span class="price">
+$189
+</span>
+
+<button
+class="smallbtn"
+onclick="addLook('MONOCHROME 01',189)"
+>
+Add look
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article class="look" data-cat="minimal affordable">
+
+<div class="lookImg">
+
+<div class="art">02</div>
+
+<span class="badge">
+Best seller
+</span>
+
+</div>
+
+<div class="lookInfo">
+
+<h3>SOFT FORM 02</h3>
+
+<p>
+Clean tee · wide pants · sneakers
+</p>
+
+<div class="lookBottom">
+
+<span class="price">
+$129
+</span>
+
+<button
+class="smallbtn"
+onclick="addLook('SOFT FORM 02',129)"
+>
+Add look
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article class="look" data-cat="sport streetwear">
+
+<div class="lookImg">
+
+<div class="art">03</div>
+
+</div>
+
+<div class="lookInfo">
+
+<h3>AFTER DARK 03</h3>
+
+<p>
+Technical top · track pants · low tops
+</p>
+
+<div class="lookBottom">
+
+<span class="price">
+$159
+</span>
+
+<button
+class="smallbtn"
+onclick="addLook('AFTER DARK 03',159)"
+>
+Add look
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+
+<article class="look" data-cat="premium minimal">
+
+<div class="lookImg">
+
+<div class="art">04</div>
+
+<span class="badge">
+Premium
+</span>
+
+</div>
+
+<div class="lookInfo">
+
+<h3>STUDIO 04</h3>
+
+<p>
+Structured shirt · tailored pants · leather
+</p>
+
+<div class="lookBottom">
+
+<span class="price">
+$279
+</span>
+
+<button
+class="smallbtn"
+onclick="addLook('STUDIO 04',279)"
+>
+Add look
+</button>
+
+</div>
+
+</div>
+
+</article>
+
+</div>
+
+</section>
+
+
+<section class="section" id="categories">
+
+<div class="sectionHead">
+
+<div>
+
+<div class="kicker">
+Find your direction
+</div>
+
+<h2>
+Shop by category
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="categories">
+
+<a class="cat" href="#looks">
+<span>01 / Premium</span>
+<strong>Luxury</strong>
+</a>
+
+<a class="cat" href="#looks">
+<span>02 / Culture</span>
+<strong>Streetwear</strong>
+</a>
+
+<a class="cat" href="#looks">
+<span>03 / Everyday</span>
+<strong>Casual</strong>
+</a>
+
+<a class="cat" href="#looks">
+<span>04 / Motion</span>
+<strong>Sport</strong>
+</a>
+
+<a class="cat" href="#looks">
+<span>05 / Smart spend</span>
+<strong>Affordable</strong>
+</a>
+
+<a class="cat" href="#looks">
+<span>06 / On foot</span>
+<strong>Sneakers</strong>
+</a>
+
+<a class="cat" href="#looks">
+<span>07 / Details</span>
+<strong>Accessories</strong>
+</a>
+
+<a class="cat" href="#mylook">
+<span>08 / Your rules</span>
+<strong>MY LOOK</strong>
+</a>
+
+</div>
+
+</section>
+
+
+<section class="section" id="mylook">
+
+<div class="banner">
+
+<div>
+
+<div class="kicker">
+Coming next
+</div>
+
+<h2>
+One look.<br>
+Every piece.
+</h2>
+
+<p>
+Build your own combination:
+tee + pants + sneakers + accessories.
+Remove, replace and save your perfect look.
+</p>
+
+</div>
+
+<button
+class="cta"
+onclick="alert('MY LOOK builder is the next module.')"
+>
+Build my look →
+</button>
+
+</div>
+
+</section>
+
+
+<section class="section" id="about">
+
+<div class="sectionHead">
+
+<div>
+
+<div class="kicker">
+The idea
+</div>
+
+<h2>
+More than clothes.
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="news">
+
+<div class="newsCard">
+
+<span class="num">
+01
+</span>
+
+<h3>
+SEE THE WHOLE OUTFIT.
+</h3>
+
+<p>
+Stop searching item by item.
+Start with a finished look and shop the pieces that make it work.
+</p>
+
+</div>
+
+
+<div class="newsCard">
+
+<span class="num">
+02
+</span>
+
+<h3>
+MAKE IT YOURS.
+</h3>
+
+<p>
+Buy the full look or only the pieces you want.
+Your style, your budget, your rules.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+<div>
+
+<div class="logo">
+6PACKWEAR
+</div>
+
+<div style="margin-top:10px">
+MORE THAN CLOTHES · WEAR YOUR BETTER SELF
+</div>
+
+</div>
+
+<div>
+© 2026 6PACKWEAR · USD / EUR / UAH
+</div>
+
+</footer>
+
+
+<div class="drawer" id="drawer">
+
+<div class="overlay" onclick="closeCart()"></div>
+
+<aside class="panel">
+
+<div class="panelHead">
+
+<h3>
+Your bag
+</h3>
+
+<button class="close" onclick="closeCart()">
+×
+</button>
+
+</div>
+
+
+<div id="cartItems" class="cartItems">
+
+<div class="empty">
+Your bag is empty.
+</div>
+
+</div>
+
+
+<div class="total">
+
+<span>
+Total
+</span>
+
+<span id="total">
+$0
+</span>
+
+</div>
+
+</aside>
+
+</div>
+
+
+<script>
+
+let cart=[];
+
+function addLook(name,price){
+
+cart.push({
+name,
+price
+});
+
+updateCart();
+openCart();
+
+}
+
+function updateCart(){
+
+document.querySelector('#count b').textContent=cart.length;
+
+const box=document.getElementById('cartItems');
+
+if(!cart.length){
+
+box.innerHTML=
+'<div class="empty">Your bag is empty.</div>';
+
+document.getElementById('total').textContent='$0';
+
+return;
+
+}
+
+box.innerHTML=cart.map((x,i)=>`
+
+<div class="cartItem">
+
+<div>
+
+<strong>
+${x.name}
+</strong>
+
+<small>
+Complete look
+</small>
+
+</div>
+
+<strong>
+$${x.price}
+</strong>
+
+</div>
+
+`).join('');
+
+document.getElementById('total').textContent=
+'$'+cart.reduce((s,x)=>s+x.price,0);
+
+}
+
+function openCart(){
+
+document
+.getElementById('drawer')
+.classList
+.add('open');
+
+}
+
+function closeCart(){
+
+document
+.getElementById('drawer')
+.classList
+.remove('open');
+
+}
+
+function filterLooks(cat,btn){
+
+document
+.querySelectorAll('.filter')
+.forEach(x=>x.classList.remove('active'));
+
+btn.classList.add('active');
+
+document
+.querySelectorAll('.look')
+.forEach(card=>{
+
+card.style.display=
+(cat==='all'||card.dataset.cat.includes(cat))
+?'block'
+:'none';
+
+});
+
+}
+
+</script>
+
 </body>
 </html>
