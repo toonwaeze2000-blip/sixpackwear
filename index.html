@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6PACKWEAR — Fashion Platform</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080808;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+a{color:inherit;text-decoration:none}.nav{height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;border-bottom:1px solid #242424;position:sticky;top:0;background:rgba(8,8,8,.94);backdrop-filter:blur(12px);z-index:5}
+.logo{font-weight:900;letter-spacing:2px;font-size:21px}.logo span{font-weight:300;color:#aaa}.navlinks{display:flex;gap:28px;font-size:13px;color:#aaa}.icons{display:flex;gap:18px;font-size:13px}
+.hero{min-height:620px;padding:90px 5vw 70px;display:flex;align-items:center;background:radial-gradient(circle at 70% 35%,#252525 0,#111 35%,#080808 70%)}
+.heroText{max-width:650px}.eyebrow{font-size:11px;letter-spacing:4px;color:#999;text-transform:uppercase}.hero h1{font-size:clamp(54px,8vw,108px);line-height:.88;margin:18px 0;font-weight:900;letter-spacing:-5px}.hero h1 em{font-style:normal;color:#bdbdbd}.hero p{color:#aaa;max-width:470px;line-height:1.7}.btn{display:inline-block;margin-top:25px;background:#f3f3f3;color:#080808;padding:15px 24px;border-radius:2px;font-size:12px;font-weight:800;letter-spacing:1px}
+.section{padding:70px 5vw}.sectionHead{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px}.section h2{font-size:30px;margin:0}.muted{color:#777;font-size:12px}.categories{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.cat{padding:22px 16px;border:1px solid #252525;background:#101010;text-transform:uppercase;font-size:11px;letter-spacing:1px;text-align:center;transition:.2s}.cat:hover{background:#1b1b1b;border-color:#555}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:#111;border:1px solid #222;overflow:hidden}.pic{height:390px;background:linear-gradient(145deg,#303030,#121212);position:relative}.pic:after{content:"6PW";position:absolute;inset:0;display:grid;place-items:center;color:#666;font-weight:900;font-size:46px;letter-spacing:4px}.cardBody{padding:17px}.tag{font-size:9px;letter-spacing:2px;color:#777;text-transform:uppercase}.card h3{font-size:16px;margin:8px 0}.price{color:#bbb;font-size:12px}.look{position:absolute;top:12px;left:12px;background:#080808;padding:7px 9px;font-size:9px;letter-spacing:1px;z-index:1}
+.banner{margin:0 5vw 70px;padding:70px;background:linear-gradient(110deg,#181818,#0b0b0b);border:1px solid #252525}.banner h2{font-size:46px;margin:0 0 10px}.banner p{color:#888}
+footer{border-top:1px solid #222;padding:45px 5vw;color:#777;font-size:11px;display:flex;justify-content:space-between}
+@media(max-width:900px){.navlinks{display:none}.categories{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.pic{height:300px}.hero{min-height:520px}}
+@media(max-width:560px){.nav{height:64px;padding:0 20px}.icons{gap:10px}.hero{padding:65px 20px}.hero h1{letter-spacing:-3px}.section{padding:48px 20px}.categories{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr 1fr;gap:9px}.pic{height:230px}.cardBody{padding:12px}.banner{margin:0 20px 45px;padding:35px 25px}.banner h2{font-size:32px}footer{padding:30px 20px;display:block}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="logo">6PACK<span>WEAR</span></div>
+  <nav class="navlinks"><a href="#looks">Looks</a><a href="#categories">Categories</a><a href="#">New Drops</a><a href="#">About</a></nav>
+  <div class="icons">⌕　♡　🛒</div>
+</header>
+
+<section class="hero">
+ <div class="heroText">
+  <div class="eyebrow">Fashion / Lifestyle / 2026</div>
+  <h1>WEAR<br><em>YOUR</em><br>LOOK.</h1>
+  <p>Discover complete outfits, shop every piece separately, or take the entire look. From luxury to everyday essentials — curated in one place.</p>
+  <a class="btn" href="#looks">EXPLORE LOOKS →</a>
+ </div>
+</section>
+
+<section class="section" id="categories">
+ <div class="sectionHead"><div><div class="muted">EXPLORE</div><h2>Shop by style</h2></div><div class="muted">ALL CATEGORIES</div></div>
+ <div class="categories">
+  <div class="cat">Luxury</div><div class="cat">Streetwear</div><div class="cat">Casual</div><div class="cat">Sport</div><div class="cat">Affordable</div><div class="cat">Sneakers</div>
+ </div>
+</section>
+
+<section class="section" id="looks">
+ <div class="sectionHead"><div><div class="muted">CURATED FOR YOU</div><h2>Featured Looks</h2></div><div class="muted">VIEW ALL →</div></div>
+ <div class="grid">
+  <article class="card"><div class="pic"><div class="look">LOOK 001</div></div><div class="cardBody"><div class="tag">Streetwear</div><h3>Urban Core</h3><div class="price">$189 · Shop full look</div></div></article>
+  <article class="card"><div class="pic"><div class="look">LOOK 002</div></div><div class="cardBody"><div class="tag">Luxury</div><h3>Monochrome Night</h3><div class="price">$740 · Shop full look</div></div></article>
+  <article class="card"><div class="pic"><div class="look">LOOK 003</div></div><div class="cardBody"><div class="tag">Casual</div><h3>Daily Essential</h3><div class="price">$129 · Shop full look</div></div></article>
+  <article class="card"><div class="pic"><div class="look">LOOK 004</div></div><div class="cardBody"><div class="tag">Sport</div><h3>After Hours</h3><div class="price">$165 · Shop full look</div></div></article>
+ </div>
+</section>
+
+<div class="banner">
+ <div class="eyebrow">THE 6PACKWEAR CONCEPT</div>
+ <h2>ONE LOOK.<br>EVERY PIECE.</h2>
+ <p>Open a look. Remove what you don't want. Add what you love. Buy one item or the whole outfit.</p>
+</div>
+
+<footer><div>© 2026 6PACKWEAR</div><div>MORE THAN CLOTHES.</div></footer>
+</body>
+</html>
