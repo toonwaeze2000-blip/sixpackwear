@@ -13,16 +13,14 @@
       const btn=document.createElement('button');
       btn.type='button'; btn.id='guestContinue'; btn.className='authSecondary'; btn.textContent='Continue as guest';
       btn.style.cssText='width:100%;text-align:center';
-      btn.onclick=()=>modal.classList.remove('show');
+      btn.onclick=()=>{modal.classList.remove('show');window.location.href='/catalog.html?view=looks'};
       form.appendChild(btn);
     };
     new MutationObserver(addGuest).observe(content,{childList:true,subtree:true});
     addGuest();
   }
-  const cartButton=document.querySelector('.hotspot.cart');
-  if(cartButton)cartButton.onclick=(e)=>{e.preventDefault();location.href='/cart.html'};
 
-  // Main homepage navigation: every primary section opens the unified shop experience.
+  // The homepage is the visual cover. Primary navigation now enters the real shop engine.
   const routes={
     looks:'/catalog.html?view=looks',
     categories:'/catalog.html?view=categories',
@@ -32,8 +30,15 @@
   };
   Object.entries(routes).forEach(([cls,href])=>{
     const el=document.querySelector('.hotspot.'+cls);
-    if(el)el.onclick=()=>{window.location.href=href};
+    if(el)el.onclick=(e)=>{e.preventDefault();window.location.href=href};
   });
+
   const hero=document.querySelector('.hotspot.heroCta');
-  if(hero)hero.onclick=()=>{window.location.href='/catalog.html?view=looks'};
+  if(hero)hero.onclick=(e)=>{e.preventDefault();window.location.href='/catalog.html?view=looks'};
+
+  const search=document.querySelector('.hotspot.search');
+  if(search)search.onclick=(e)=>{e.preventDefault();window.location.href='/catalog.html?view=search'};
+
+  const cart=document.querySelector('.hotspot.cart');
+  if(cart)cart.onclick=(e)=>{e.preventDefault();window.location.href='/cart.html'};
 })();
