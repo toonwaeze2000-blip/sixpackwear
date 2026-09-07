@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "looks": [
+    {"id":"l001","name":"City Uniform","style":"Streetwear","tier":"Affordable","cover":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","productIds":["p001","p002","p003"]},
+    {"id":"l002","name":"Clean Everyday","style":"Casual","tier":"Affordable","cover":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","productIds":["p001","p002","p005"]},
+    {"id":"l003","name":"Runway Form","style":"Sport","tier":"Luxury","cover":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","productIds":["p004","p003","p005"]},
+    {"id":"l004","name":"After Hours","style":"Luxury","tier":"Luxury","cover":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","productIds":["p004","p002","p003"]}
+  ]
+}
