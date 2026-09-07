@@ -21,4 +21,19 @@
   }
   const cartButton=document.querySelector('.hotspot.cart');
   if(cartButton)cartButton.onclick=(e)=>{e.preventDefault();location.href='/cart.html'};
+
+  // Main homepage navigation: every primary section opens the unified shop experience.
+  const routes={
+    looks:'/catalog.html?view=looks',
+    categories:'/catalog.html?view=categories',
+    brands:'/catalog.html?view=brands',
+    newdrops:'/catalog.html?view=newdrops',
+    mylook:'/my-look.html'
+  };
+  Object.entries(routes).forEach(([cls,href])=>{
+    const el=document.querySelector('.hotspot.'+cls);
+    if(el)el.onclick=()=>{window.location.href=href};
+  });
+  const hero=document.querySelector('.hotspot.heroCta');
+  if(hero)hero.onclick=()=>{window.location.href='/catalog.html?view=looks'};
 })();
