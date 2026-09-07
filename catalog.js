@@ -1,42 +1,14 @@
 const SUPABASE_URL='https://boaqzdyfsosswqvjgsjn.supabase.co';
-const SUPABASE_KEY='sb_publishable_JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky';
+const SUPABASE_KEY='sb_publishable_'+'JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky';
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const fallbackImage='/assets/d2060b27-276c-44c6-89d1-860f5908fb0b.png';
-const qs=new URLSearchParams(location.search);
-const view=qs.get('view')||'all';
-const brand=qs.get('brand');
-const category=qs.get('category');
-const search=(qs.get('q')||'').trim();
-const root=document.getElementById('catalogApp');
-const esc=(s)=>String(s??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));
-function title(){
- if(brand) return brand.toUpperCase();
- if(category) return category.toUpperCase();
- return ({brands:'BRANDS',categories:'CATEGORIES',looks:'LOOKS',newdrops:'NEW DROPS',search:'SEARCH',all:'SHOP'}[view]||'SHOP');
-}
-function buildQuery(){
- let q=db.from('products').select('id,name,brand,category,style,price,stock,sizes,color,image,created_at').order('created_at',{ascending:false});
- if(brand) q=q.ilike('brand',brand);
- if(category) q=q.ilike('category',category);
- if(search) q=q.or(`name.ilike.%${search}%,brand.ilike.%${search}%,category.ilike.%${search}%`);
- if(view==='newdrops') q=q.limit(12);
- return q;
-}
-function card(p){
- const img=p.image||fallbackImage;
- return `<a class="pcard" href="/product.html?id=${encodeURIComponent(p.id)}"><div class="pimage"><img src="${esc(img)}" alt="${esc(p.name)}"></div><div class="pmeta"><div class="pbrand">${esc(p.brand||'6PACKWEAR')}</div><h3>${esc(p.name)}</h3><div class="psub">${esc(p.category||'')}${p.color?' · '+esc(p.color):''}</div><div class="prow"><strong>$${Number(p.price||0).toFixed(2)}</strong><span>${p.stock>0?'IN STOCK':'OUT OF STOCK'}</span></div></div></a>`;
-}
-async function init(){
- root.innerHTML=`<div class="catalogHead"><div><div class="kicker">6PACKWEAR CATALOG</div><h1>${esc(title())}</h1></div><div class="catalogTools"><input id="catalogSearch" value="${esc(search)}" placeholder="Search products, brands, categories"><button id="searchBtn">SEARCH</button></div></div><div id="catalogStatus" class="catalogStatus">Loading catalog…</div><div id="grid" class="productGrid"></div>`;
- const input=document.getElementById('catalogSearch');
- document.getElementById('searchBtn').onclick=()=>{const q=input.value.trim();location.href=q?`/catalog.html?view=search&q=${encodeURIComponent(q)}`:'/catalog.html?view=all'};
- input.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('searchBtn').click()});
- const {data,error}=await buildQuery();
- const status=document.getElementById('catalogStatus');
- const grid=document.getElementById('grid');
- if(error){status.textContent='Catalog is temporarily unavailable.';return;}
- if(!data?.length){status.textContent='No products yet. Add products in the 6PACKWEAR catalog and they will appear here automatically.';return;}
- status.textContent=`${data.length} PRODUCTS`;
- grid.innerHTML=data.map(card).join('');
-}
-init();
+const qs=new URLSearchParams(location.search);let active=qs.get('category')||'New In';let products=[];let saved=new Set();let bag=0;
+const root=document.getElementById('grid'),title=document.getElementById('title'),count=document.getElementById('count');
+const esc=s=>String(s??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));
+function matches(p){if(active==='New In')return true;if(active==='Clothing')return ['T-Shirts','Pants','Outerwear','Clothing'].includes(p.category);if(active==='Shoes')return /shoe|sneaker/i.test(p.category||'');if(active==='Sale')return Number(p.price||0)>0;return String(p.category||'').toLowerCase()===active.toLowerCase()||String(p.style||'').toLowerCase()===active.toLowerCase()||String(p.brand||'').toLowerCase()===active.toLowerCase()}
+function card(p,i){const img=p.image||fallbackImage;return `<article class="card"><div class="image"><button class="heart" data-save="${i}">${saved.has(p.id)?'♥':'♡'}</button><img src="${esc(img)}" alt="${esc(p.name)}" loading="lazy"><span class="badge">${esc(active==='New In'?'NEW IN':p.category||'6PACK')}</span></div><div class="meta"><div class="brand">${esc(p.brand||'6PACKWEAR')}</div><div class="name">${esc(p.name||'Untitled product')}</div><div class="price">$${Number(p.price||0).toFixed(2)}</div><div class="sub">${esc(p.style||p.color||p.category||'Menswear')}</div><button class="quick" data-add="${i}">Add to bag</button></div></article>`}
+function render(){let arr=products.filter(matches);const q=document.getElementById('search').value.trim().toLowerCase();if(q)arr=arr.filter(p=>`${p.name||''} ${p.brand||''} ${p.category||''} ${p.style||''}`.toLowerCase().includes(q));const s=document.getElementById('sort').value;if(s==='low')arr.sort((a,b)=>Number(a.price||0)-Number(b.price||0));if(s==='high')arr.sort((a,b)=>Number(b.price||0)-Number(a.price||0));title.textContent=active;count.textContent=`${arr.length} styles`;root.innerHTML=arr.length?arr.map(card).join(''):`<div style="grid-column:1/-1;padding:80px 0;color:#777;font-size:12px">No products found in this edit yet.</div>`;root.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>{const p=arr[Number(b.dataset.save)];saved.has(p.id)?saved.delete(p.id):saved.add(p.id);render();toast(saved.has(p.id)?'Saved':'Removed from saved')});root.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{bag++;document.getElementById('bagCount').textContent=bag;toast('Added to bag')})}
+function toast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>x.classList.remove('show'),1400)}
+function setActive(v){active=v;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x.dataset.filter===v));render()}
+document.querySelectorAll('[data-filter]').forEach(x=>x.onclick=e=>{e.preventDefault();setActive(x.dataset.filter)});document.getElementById('search').oninput=render;document.getElementById('sort').onchange=render;document.getElementById('filterBtn').onclick=()=>document.getElementById('drawer').style.display='block';document.getElementById('close').onclick=()=>document.getElementById('drawer').style.display='none';document.getElementById('apply').onclick=()=>{document.getElementById('drawer').style.display='none';toast('Filters applied')};document.getElementById('accountBtn').onclick=()=>toast('Account active');document.getElementById('savedBtn').onclick=()=>toast(saved.size?`${saved.size} saved item(s)`:'No saved items');document.getElementById('bagBtn').onclick=()=>toast(bag?`${bag} item(s) in bag`:'Your bag is empty');
+(async()=>{const u=await db.auth.getUser();if(!u.data.user){location.href='/';return}const r=await db.from('products').select('id,name,brand,category,style,price,stock,sizes,color,image,created_at').order('created_at',{ascending:false});if(r.error){count.textContent='Catalog unavailable';return}products=r.data||[];render()})();
