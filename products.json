@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "currencyBase": "USD",
+  "products": [
+    {"id":"p001","name":"Oversized Essential Tee","brand":"Essentials","category":"Clothing","style":"Streetwear","price":65,"stock":12,"sizes":["S","M","L","XL"],"color":"Black","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","supplier":{"mode":"on-demand","sku":"ESS-TEE-001","cost":38}},
+    {"id":"p002","name":"Cargo Trouser","brand":"Carhartt","category":"Clothing","style":"Streetwear","price":120,"stock":7,"sizes":["S","M","L","XL"],"color":"Charcoal","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","supplier":{"mode":"on-demand","sku":"CAR-CARGO-002","cost":74}},
+    {"id":"p003","name":"New Balance Runner","brand":"New Balance","category":"Sneakers","style":"Sport","price":190,"stock":5,"sizes":["40","41","42","43","44","45"],"color":"Grey","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","supplier":{"mode":"on-demand","sku":"NB-RUN-003","cost":142}},
+    {"id":"p004","name":"Technical Overshirt","brand":"Stone Island","category":"Outerwear","style":"Luxury","price":310,"stock":3,"sizes":["M","L","XL"],"color":"Black","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","supplier":{"mode":"on-demand","sku":"SI-OVER-004","cost":228}},
+    {"id":"p005","name":"Structured Cap","brand":"6PACKWEAR","category":"Accessories","style":"Casual","price":45,"stock":20,"sizes":["ONE SIZE"],"color":"Black","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png","supplier":{"mode":"on-demand","sku":"6PW-CAP-005","cost":21}}
+  ]
+}
