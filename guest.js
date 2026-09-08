@@ -55,4 +55,49 @@
   // Account is handled by auth.js. Do not overwrite its click handler here.
   const hero=document.querySelector('.hotspot.heroCta');
   if(hero)hero.onclick=e=>{e.preventDefault();window.location.assign('/catalog.html?view=looks')};
+
+  // Live Shop the Look section: replace placeholder hero artwork with real product images from Supabase.
+  const hydrateLiveLooks=async()=>{
+    const grid=document.querySelector('.looksGrid');
+    if(!grid||!window.supabase?.createClient)return;
+    try{
+      const db=window.supabase.createClient('https://boaqzdyfsosswqvjgsjn.supabase.co','sb_publishable_JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky');
+      const r=await db.from('products').select('id,name,brand,category,style,price,image,created_at').order('created_at',{ascending:false}).limit(40);
+      if(r.error||!Array.isArray(r.data)||!r.data.length)return;
+      const products=r.data.filter(p=>p&&p.image&&!/(women|woman|womens|female|ladies|girls)/i.test([p.name,p.category,p.brand,p.style].join(' ')));
+      const specs=[
+        {title:'City Uniform',match:/outerwear|pants|accessories|utility|streetwear/i,meta:'Jacket · trousers · accessories'},
+        {title:'Clean Everyday',match:/t-shirts|shirts|pants|chinos|minimal|casual|relaxed/i,meta:'Tee · pants · sneakers'},
+        {title:'Runway Form',match:/luxury|tailoring|outerwear|jacket|wool|smart/i,meta:'Jacket · trousers · footwear'},
+        {title:'After Hours',match:/shirts|outerwear|accessories|denim|evening/i,meta:'Shirt · trousers · accessories'}
+      ];
+      const used=new Set();
+      const pick=rx=>products.find(p=>!used.has(p.id)&&rx.test([p.category,p.style,p.name,p.brand].join(' ')))||products.find(p=>!used.has(p.id));
+      grid.querySelectorAll('.look').forEach((card,i)=>{
+        const spec=specs[i]||specs[0];
+        const p=pick(spec.match);
+        if(!p)return;
+        used.add(p.id);
+        const img=card.querySelector('.lookImg img');
+        const brand=card.querySelector('.brand');
+        const h3=card.querySelector('h3');
+        const meta=card.querySelector('.meta');
+        const price=card.querySelector('.row span');
+        const add=card.querySelector('.add');
+        if(img){img.src=p.image;img.alt=p.name||spec.title;img.loading='lazy';img.style.filter='none';}
+        if(brand)brand.textContent=[p.brand||'6PACKWEAR',p.category||'MEN'].join(' · ');
+        if(h3)h3.textContent=spec.title;
+        if(meta)meta.textContent=spec.meta;
+        if(price)price.textContent='$'+Number(p.price||0).toFixed(0);
+        card.dataset.productId=p.id;
+        card.setAttribute('role','link');
+        card.setAttribute('tabindex','0');
+        card.style.cursor='pointer';
+        card.onclick=e=>{if(e.target.closest('button')){e.preventDefault();e.stopPropagation();}else window.location.href='/product.html?id='+encodeURIComponent(p.id)};
+        card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();window.location.href='/product.html?id='+encodeURIComponent(p.id)}};
+        if(add){add.type='button';add.textContent='VIEW ITEM';add.onclick=e=>{e.preventDefault();e.stopPropagation();window.location.href='/product.html?id='+encodeURIComponent(p.id)}}
+      });
+    }catch(err){console.error('live looks',err)}
+  };
+  hydrateLiveLooks();
 })();
