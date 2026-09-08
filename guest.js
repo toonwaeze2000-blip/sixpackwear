@@ -100,36 +100,120 @@
     }catch(err){console.error('live looks',err)}
   };
 
-  // Premium brand directory directly below Shop the Look.
-  const injectLuxuryBrands=()=>{
-    if(document.getElementById('luxuryBrands'))return;
-    const lookGrid=document.querySelector('.looksGrid');
-    const baseSection=lookGrid?.closest('.section');
+  // LIVE luxury-house feed: reads current official pages through a Supabase Edge Function,
+  // then rotates the visible cards while keeping every card linked to the official source.
+  const injectLuxuryLive=async()=>{
+    if(document.getElementById('luxuryLive'))return;
+    const baseSection=document.querySelector('.looksGrid')?.closest('.section');
     if(!baseSection)return;
+
     const section=document.createElement('section');
-    section.id='luxuryBrands';
-    section.className='section luxurySection';
+    section.id='luxuryLive';
+    section.className='section luxuryLiveSection';
     section.innerHTML=`
-      <div class="kicker">Luxury edit</div>
-      <h2>Luxury Houses</h2>
-      <p class="luxuryLead">Explore official maisons and their latest men's collections.</p>
-      <div class="luxuryGrid">
-        <a class="luxuryCard" href="https://www.balenciaga.com/en-pl/" target="_blank" rel="noopener noreferrer"><strong>BALENCIAGA</strong><span>Official site ↗</span></a>
-        <a class="luxuryCard" href="https://eu.louisvuitton.com/eng-e1/homepage" target="_blank" rel="noopener noreferrer"><strong>LOUIS VUITTON</strong><span>Official site ↗</span></a>
-        <a class="luxuryCard" href="https://www.prada.com/ww/en.html" target="_blank" rel="noopener noreferrer"><strong>PRADA</strong><span>Official site ↗</span></a>
-        <a class="luxuryCard" href="https://www.gucci.com/int/en/" target="_blank" rel="noopener noreferrer"><strong>GUCCI</strong><span>Official site ↗</span></a>
-        <a class="luxuryCard" href="https://www.dior.com/en_pl" target="_blank" rel="noopener noreferrer"><strong>DIOR</strong><span>Official site ↗</span></a>
-        <a class="luxuryCard" href="https://www.ysl.com/en-pl" target="_blank" rel="noopener noreferrer"><strong>SAINT LAURENT</strong><span>Official site ↗</span></a>
-        <a class="luxuryCard" href="https://www.moncler.com/ru-ru/" target="_blank" rel="noopener noreferrer"><strong>MONCLER</strong><span>Official site ↗</span></a>
-        <a class="luxuryCard" href="https://int.burberry.com/" target="_blank" rel="noopener noreferrer"><strong>BURBERRY</strong><span>Official site ↗</span></a>
-      </div>`;
+      <div class="luxuryLiveHead">
+        <div>
+          <div class="kicker">Live from the houses</div>
+          <h2>LIVE LUXURY</h2>
+        </div>
+        <div class="luxuryLiveStatus"><span class="liveDot"></span><span id="luxuryLiveStatusText">SYNCING OFFICIAL FEEDS</span></div>
+      </div>
+      <div class="luxuryTicker" aria-hidden="true"><div class="luxuryTickerTrack">BALENCIAGA · LOUIS VUITTON · PRADA · GUCCI · DIOR · SAINT LAURENT · MONCLER · BURBERRY · BALENCIAGA · LOUIS VUITTON · PRADA · GUCCI · DIOR · SAINT LAURENT · MONCLER · BURBERRY ·</div></div>
+      <div class="luxuryLiveGrid" id="luxuryLiveGrid"></div>
+      <div class="luxuryLiveNote">Live feed from official brand pages · refreshes automatically · opens the official house site</div>`;
+
     const style=document.createElement('style');
-    style.id='luxuryBrandsStyle';
-    style.textContent=`.luxuryLead{max-width:620px;color:#777;font-size:12px;line-height:1.6;margin:-4px 0 28px}.luxuryGrid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #292929;border-left:1px solid #292929}.luxuryCard{min-height:150px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #292929;border-bottom:1px solid #292929;background:linear-gradient(180deg,#0b0b0b,#070707);text-decoration:none;transition:transform .22s,border-color .22s,background .22s}.luxuryCard strong{font-size:18px;letter-spacing:.03em;color:#f4f4f0}.luxuryCard span{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#777}.luxuryCard:hover{transform:translateY(-3px);background:#101010;border-color:#565656}.luxuryCard:hover span{color:#fff}@media(max-width:900px){.luxuryGrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.luxuryGrid{grid-template-columns:1fr}.luxuryCard{min-height:120px}}`;
+    style.id='luxuryLiveStyle';
+    style.textContent=`
+      .luxuryLiveSection{padding-top:75px;overflow:hidden}
+      .luxuryLiveHead{display:flex;justify-content:space-between;align-items:end;gap:30px;border-bottom:1px solid #292929;padding-bottom:24px}
+      .luxuryLiveHead h2{margin:8px 0 0;font-size:clamp(46px,6vw,78px);line-height:.82;letter-spacing:-.07em;text-transform:uppercase}
+      .luxuryLiveStatus{display:flex;align-items:center;gap:8px;color:#898989;font-size:9px;letter-spacing:.15em;text-transform:uppercase;white-space:nowrap}
+      .liveDot{width:7px;height:7px;border-radius:50%;background:#f4f4f0;box-shadow:0 0 0 0 rgba(244,244,240,.55);animation:livePulse 1.8s infinite}
+      @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(244,244,240,.45)}70%{box-shadow:0 0 0 7px rgba(244,244,240,0)}100%{box-shadow:0 0 0 0 rgba(244,244,240,0)}}
+      .luxuryTicker{overflow:hidden;border-bottom:1px solid #292929;background:#080808;white-space:nowrap}
+      .luxuryTickerTrack{display:inline-block;min-width:max-content;padding:15px 0;color:#777;font-size:9px;letter-spacing:.19em;text-transform:uppercase;animation:luxTicker 30s linear infinite}
+      @keyframes luxTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+      .luxuryLiveGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+      .luxuryLiveCard{position:relative;min-height:350px;background:#0b0b0b;border:1px solid #292929;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;opacity:1;transform:translateY(0);transition:opacity .35s,transform .35s,border-color .2s}
+      .luxuryLiveCard.swap{opacity:0;transform:translateY(10px)}
+      .luxuryLiveCard:hover{border-color:#555}
+      .luxuryLiveImage{position:absolute;inset:0;background:linear-gradient(150deg,#141414,#060606);display:flex;align-items:center;justify-content:center;overflow:hidden}
+      .luxuryLiveImage img{width:100%;height:100%;object-fit:cover;display:block;opacity:.8;filter:grayscale(.15);transform:scale(1.01)}
+      .luxuryLiveImage.noImage:after{content:'6PACKWEAR / LIVE';font-size:10px;letter-spacing:.22em;color:#555;text-transform:uppercase}
+      .luxuryLiveShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.02) 30%,rgba(0,0,0,.88) 100%)}
+      .luxuryLiveBody{position:relative;z-index:2;padding:24px}
+      .luxuryLiveBrand{font-size:11px;font-weight:900;letter-spacing:.09em;color:#fff}
+      .luxuryLiveLabel{margin-top:8px;font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:#cfcfca}
+      .luxuryLiveTitle{margin-top:9px;font-size:17px;line-height:1.25;color:#fff;max-width:320px}
+      .luxuryLiveCount{margin-top:8px;font-size:10px;color:#999}
+      .luxuryLiveArrow{position:absolute;right:18px;top:18px;z-index:3;color:#fff;font-size:19px}
+      .luxuryLiveNote{margin-top:13px;color:#686868;font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+      @media(max-width:900px){.luxuryLiveGrid{grid-template-columns:repeat(2,1fr)}.luxuryLiveHead{display:block}.luxuryLiveStatus{margin-top:18px}}
+      @media(max-width:560px){.luxuryLiveGrid{grid-template-columns:1fr}.luxuryLiveCard{min-height:300px}.luxuryLiveSection{padding-top:58px}}
+    `;
     document.head.appendChild(style);
     baseSection.insertAdjacentElement('afterend',section);
+
+    const grid=document.getElementById('luxuryLiveGrid');
+    const status=document.getElementById('luxuryLiveStatusText');
+    if(!grid)return;
+
+    const renderSet=(items,offset)=>{
+      const n=items.length;
+      const visible=Array.from({length:4},(_,i)=>items[(offset+i)%n]);
+      grid.querySelectorAll('.luxuryLiveCard').forEach(x=>x.classList.add('swap'));
+      setTimeout(()=>{
+        grid.innerHTML=visible.map(item=>{
+          const img=item.image?`<img src="${String(item.image).replace(/"/g,'&quot;')}" alt="" loading="lazy" onerror="this.parentElement.classList.add('noImage');this.remove()">`:'';
+          const count=item.count?`${item.count} current styles`:'Official live page';
+          const title=(item.title||'Latest official edit').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          return `<a class="luxuryLiveCard" href="${String(item.url).replace(/"/g,'&quot;')}" target="_blank" rel="noopener noreferrer"><span class="luxuryLiveImage">${img}</span><span class="luxuryLiveShade"></span><span class="luxuryLiveArrow">↗</span><span class="luxuryLiveBody"><span class="luxuryLiveBrand">${item.brand}</span><span class="luxuryLiveLabel">${item.label||'LIVE EDIT'}</span><span class="luxuryLiveTitle">${title}</span><span class="luxuryLiveCount">${count}</span></span></a>`;
+        }).join('');
+      },260);
+      setTimeout(()=>grid.querySelectorAll('.luxuryLiveCard').forEach(x=>x.classList.remove('swap')),290);
+    };
+
+    try{
+      const feedUrl='https://boaqzdyfsosswqvjgsjn.supabase.co/functions/v1/brand-live-feed';
+      const r=await fetch(feedUrl,{headers:{apikey:'sb_publishable_JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky'}});
+      if(!r.ok)throw new Error('LIVE_FEED_'+r.status);
+      const payload=await r.json();
+      let items=Array.isArray(payload.items)?payload.items.filter(x=>x?.brand&&x?.url):[];
+      if(!items.length)throw new Error('NO_LIVE_ITEMS');
+      status.textContent='LIVE · OFFICIAL PAGES';
+      const usable=items.length<4?[...items,...items,...items].slice(0,4):items;
+      let offset=0;
+      renderSet(usable,offset);
+      let timer=setInterval(()=>{offset=(offset+1)%usable.length;renderSet(usable,offset)},4500);
+      section.addEventListener('mouseenter',()=>clearInterval(timer));
+      section.addEventListener('mouseleave',()=>{clearInterval(timer);timer=setInterval(()=>{offset=(offset+1)%usable.length;renderSet(usable,offset)},4500)});
+      // Re-check official pages periodically so the feed changes as those sites change.
+      setInterval(async()=>{
+        try{
+          const rr=await fetch(feedUrl,{headers:{apikey:'sb_publishable_JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky'}});
+          if(!rr.ok)return;
+          const next=await rr.json();
+          if(Array.isArray(next.items)&&next.items.length)items=next.items.filter(x=>x?.brand&&x?.url);
+        }catch{}
+      },5*60*1000);
+    }catch(err){
+      console.error('luxury live feed',err);
+      status.textContent='OFFICIAL FEED · RETRYING';
+      const fallback=[
+        {brand:'BALENCIAGA',label:'NEW ARRIVALS',title:'Official men’s new arrivals',url:'https://www.balenciaga.com/en-us/men/discover-men/new-arrivals-for-men'},
+        {brand:'PRADA',label:'NEW IN',title:'Official men’s new-in edit',url:'https://www.prada.com/eu/en/mens/new-in/c/10182EU'},
+        {brand:'DIOR',label:'WHAT’S NEW',title:'Official men’s latest arrivals',url:'https://www.dior.com/en_pl/fashion/mens-fashion/whats-new-for-men'},
+        {brand:'MONCLER',label:'NEW IN',title:'Official men’s new-in edit',url:'https://www.moncler.com/en-us/men/new-in/view-all-new-arrivals'},
+        {brand:'GUCCI',label:'NEW IN',title:'Official men’s new-in edit',url:'https://www.gucci.com/pl/en_gb/ca/men-c-men'},
+        {brand:'BURBERRY',label:'NEW ARRIVALS',title:'Official men’s new arrivals',url:'https://pl.burberry.com/l/mens-clothing/new-arrivals/'},
+        {brand:'LOUIS VUITTON',label:'LIVE EDIT',title:'Official Louis Vuitton site',url:'https://us.louisvuitton.com/eng-us/homepage'},
+        {brand:'SAINT LAURENT',label:'LIVE EDIT',title:'Official Saint Laurent site',url:'https://www.ysl.com/en-us'}
+      ];
+      let offset=0;renderSet(fallback,offset);setInterval(()=>{offset=(offset+1)%fallback.length;renderSet(fallback,offset)},4500);
+    }
   };
 
-  injectLuxuryBrands();
+  injectLuxuryLive();
   hydrateLiveLooks();
 })();
