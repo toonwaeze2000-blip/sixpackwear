@@ -56,7 +56,7 @@
   const hero=document.querySelector('.hotspot.heroCta');
   if(hero)hero.onclick=e=>{e.preventDefault();window.location.assign('/catalog.html?view=looks')};
 
-  // Live Shop the Look section: replace placeholder hero artwork with real product images from Supabase.
+  // Live Shop the Look section: replace placeholder artwork with real product images from Supabase.
   const hydrateLiveLooks=async()=>{
     const grid=document.querySelector('.looksGrid');
     if(!grid||!window.supabase?.createClient)return;
@@ -99,5 +99,37 @@
       });
     }catch(err){console.error('live looks',err)}
   };
+
+  // Premium brand directory directly below Shop the Look.
+  const injectLuxuryBrands=()=>{
+    if(document.getElementById('luxuryBrands'))return;
+    const lookGrid=document.querySelector('.looksGrid');
+    const baseSection=lookGrid?.closest('.section');
+    if(!baseSection)return;
+    const section=document.createElement('section');
+    section.id='luxuryBrands';
+    section.className='section luxurySection';
+    section.innerHTML=`
+      <div class="kicker">Luxury edit</div>
+      <h2>Luxury Houses</h2>
+      <p class="luxuryLead">Explore official maisons and their latest men's collections.</p>
+      <div class="luxuryGrid">
+        <a class="luxuryCard" href="https://www.balenciaga.com/en-pl/" target="_blank" rel="noopener noreferrer"><strong>BALENCIAGA</strong><span>Official site ↗</span></a>
+        <a class="luxuryCard" href="https://eu.louisvuitton.com/eng-e1/homepage" target="_blank" rel="noopener noreferrer"><strong>LOUIS VUITTON</strong><span>Official site ↗</span></a>
+        <a class="luxuryCard" href="https://www.prada.com/ww/en.html" target="_blank" rel="noopener noreferrer"><strong>PRADA</strong><span>Official site ↗</span></a>
+        <a class="luxuryCard" href="https://www.gucci.com/int/en/" target="_blank" rel="noopener noreferrer"><strong>GUCCI</strong><span>Official site ↗</span></a>
+        <a class="luxuryCard" href="https://www.dior.com/en_pl" target="_blank" rel="noopener noreferrer"><strong>DIOR</strong><span>Official site ↗</span></a>
+        <a class="luxuryCard" href="https://www.ysl.com/en-pl" target="_blank" rel="noopener noreferrer"><strong>SAINT LAURENT</strong><span>Official site ↗</span></a>
+        <a class="luxuryCard" href="https://www.moncler.com/ru-ru/" target="_blank" rel="noopener noreferrer"><strong>MONCLER</strong><span>Official site ↗</span></a>
+        <a class="luxuryCard" href="https://int.burberry.com/" target="_blank" rel="noopener noreferrer"><strong>BURBERRY</strong><span>Official site ↗</span></a>
+      </div>`;
+    const style=document.createElement('style');
+    style.id='luxuryBrandsStyle';
+    style.textContent=`.luxuryLead{max-width:620px;color:#777;font-size:12px;line-height:1.6;margin:-4px 0 28px}.luxuryGrid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #292929;border-left:1px solid #292929}.luxuryCard{min-height:150px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #292929;border-bottom:1px solid #292929;background:linear-gradient(180deg,#0b0b0b,#070707);text-decoration:none;transition:transform .22s,border-color .22s,background .22s}.luxuryCard strong{font-size:18px;letter-spacing:.03em;color:#f4f4f0}.luxuryCard span{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#777}.luxuryCard:hover{transform:translateY(-3px);background:#101010;border-color:#565656}.luxuryCard:hover span{color:#fff}@media(max-width:900px){.luxuryGrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.luxuryGrid{grid-template-columns:1fr}.luxuryCard{min-height:120px}}`;
+    document.head.appendChild(style);
+    baseSection.insertAdjacentElement('afterend',section);
+  };
+
+  injectLuxuryBrands();
   hydrateLiveLooks();
 })();
