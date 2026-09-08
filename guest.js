@@ -52,8 +52,7 @@
     };
   });
 
-  const account=document.querySelector('.hotspot.account');
-  if(account){account.onclick=e=>{e.preventDefault();document.getElementById('accountHotspot')?.click()};}
+  // Account is handled by auth.js. Do not overwrite its click handler here.
   const hero=document.querySelector('.hotspot.heroCta');
   if(hero)hero.onclick=e=>{e.preventDefault();window.location.assign('/catalog.html?view=looks')};
 })();
