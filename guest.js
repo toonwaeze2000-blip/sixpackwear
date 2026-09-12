@@ -159,6 +159,20 @@
     const status=document.getElementById('luxuryLiveStatusText');
     if(!grid)return;
 
+    // The edge function scrapes each brand's official page. When a brand's site blocks the
+    // scraper (bot protection, geo-block, rate limit) it returns an "Access Denied"-style page,
+    // and that raw denial text was leaking straight into the card as if it were real content.
+    // Detect that case and fall back to a safe generic title instead of showing it to shoppers.
+    const looksBlocked=s=>/access denied|forbidden|captcha|are you a robot|verify you are human|unable to (access|retrieve|load)|blocked|please enable (javascript|cookies)|return at a later time|something went wrong|service unavailable|rate limit/i.test(String(s||''));
+    const safeTitle=item=>{
+      const raw=item.title||'';
+      if(!raw||looksBlocked(raw))return 'Official new-in edit';
+      return raw;
+    };
+    const safeCount=item=>{
+      if(looksBlocked(item.title)||looksBlocked(item.count))return 'Official live page';
+      return item.count?`${item.count} current styles`:'Official live page';
+    };
     const renderSet=(items,offset)=>{
       const n=items.length;
       const visible=Array.from({length:4},(_,i)=>items[(offset+i)%n]);
@@ -166,8 +180,8 @@
       setTimeout(()=>{
         grid.innerHTML=visible.map(item=>{
           const img=item.image?`<img src="${String(item.image).replace(/"/g,'&quot;')}" alt="" loading="lazy" onerror="this.parentElement.classList.add('noImage');this.remove()">`:'';
-          const count=item.count?`${item.count} current styles`:'Official live page';
-          const title=(item.title||'Latest official edit').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          const count=safeCount(item);
+          const title=safeTitle(item).replace(/</g,'&lt;').replace(/>/g,'&gt;');
           return `<a class="luxuryLiveCard" href="${String(item.url).replace(/"/g,'&quot;')}" target="_blank" rel="noopener noreferrer"><span class="luxuryLiveImage">${img}</span><span class="luxuryLiveShade"></span><span class="luxuryLiveArrow">↗</span><span class="luxuryLiveBody"><span class="luxuryLiveBrand">${item.brand}</span><span class="luxuryLiveLabel">${item.label||'LIVE EDIT'}</span><span class="luxuryLiveTitle">${title}</span><span class="luxuryLiveCount">${count}</span></span></a>`;
         }).join('');
       },260);
