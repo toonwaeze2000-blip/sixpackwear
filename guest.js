@@ -78,13 +78,13 @@
         const p=pick(spec.match);
         if(!p)return;
         used.add(p.id);
-        const img=card.querySelector('.lookImg img');
         const brand=card.querySelector('.brand');
         const h3=card.querySelector('h3');
         const meta=card.querySelector('.meta');
         const price=card.querySelector('.row span');
         const add=card.querySelector('.add');
-        if(img){img.src=p.image;img.alt=p.name||spec.title;img.loading='lazy';}
+        // Note: the .lookImg photo is now a real curated outfit shot baked into index.html —
+        // no longer overwritten with an individual product photo here.
         if(brand)brand.textContent=[p.brand||'6PACKWEAR',p.category||'MEN'].join(' · ');
         if(h3)h3.textContent=spec.title;
         if(meta)meta.textContent=spec.meta;
