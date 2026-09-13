@@ -104,8 +104,8 @@ function renderForm(cart){
       try{ if(window.sixpackAuthState){ const u=await window.sixpackAuthState(); userId=u?.id||null; } }catch{}
       const orderId=(crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2)));
       const orderRow={
-        id:orderId, user_id:userId, status:'pending', currency:'USD',
-        subtotal:Number(subtotal.toFixed(2)), shipping:0, total:Number(subtotal.toFixed(2)),
+        id:orderId, user_id:userId, status:'pending',
+        total:Number(subtotal.toFixed(2)),
         customer_name:name, phone, city, delivery_address:address, comment:comment||null
       };
       const ins1=await db.from('orders').insert(orderRow);
@@ -113,9 +113,8 @@ function renderForm(cart){
       const itemRows=cart.map(x=>{
         const p=x.product||{};
         return {
-          order_id:orderId, product_id:p.id||null, product_name:p.name||'Product',
-          brand:p.brand||null, size:x.size||null, quantity:Number(x.quantity||1),
-          unit_price:Number(p.price||0), line_total:Number((Number(p.price||0)*Number(x.quantity||1)).toFixed(2))
+          order_id:orderId, product_id:p.id||null, name:p.name||'Product',
+          size:x.size||null, quantity:Number(x.quantity||1), price:Number(p.price||0)
         };
       });
       const ins2=await db.from('order_items').insert(itemRows);
