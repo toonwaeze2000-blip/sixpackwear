@@ -1,6 +1,6 @@
-const SUPABASE_URL='https://boaqzdyfsosswqvjgsjn.supabase.co';
-const SUPABASE_KEY='sb_publishable_'+'JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const AUTH_SB_URL='https://boaqzdyfsosswqvjgsjn.supabase.co';
+const AUTH_SB_KEY='sb_publishable_'+'JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky';
+const sb=window.supabase.createClient(AUTH_SB_URL,AUTH_SB_KEY);
 window.sixpackAuth=sb;
 (()=>{
 const modal=document.getElementById('authModal'),content=document.getElementById('authContent');
