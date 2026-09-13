@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>6PACKWEAR — Checkout</title>
+<style>
+:root{--bg:#050505;--panel:#0b0b0b;--text:#f4f4f0;--muted:#858585;--line:#292929}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+a{text-decoration:none;color:inherit}
+button{font:inherit;cursor:pointer}
+.top{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 4vw;gap:26px}
+.logo{font-size:25px;font-weight:900;letter-spacing:-.08em}
+.wrap{max-width:900px;margin:auto;padding:52px 34px 100px}
+.back{display:inline-block;color:#777;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:24px}
+.kicker{font-size:10px;color:#777;letter-spacing:.24em;text-transform:uppercase}
+.title{font-size:clamp(40px,6vw,64px);line-height:.88;letter-spacing:-.06em;text-transform:uppercase;margin:10px 0 35px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);padding:24px}
+.card h2{margin:0 0 18px;font-size:16px;text-transform:uppercase;letter-spacing:.1em}
+.line{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.line .meta{color:#888;font-size:11px;margin-top:4px}
+.totalRow{display:flex;justify-content:space-between;padding-top:16px;margin-top:6px;font-size:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;color:#888;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.field input,.field textarea{width:100%;background:#111;border:1px solid #333;color:#fff;padding:12px;font:inherit;outline:0}
+.field textarea{min-height:70px;resize:vertical}
+.submit{width:100%;height:52px;margin-top:10px;background:#f0f0eb;color:#050505;border:0;font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.submit:disabled{opacity:.5;cursor:not-allowed}
+.note{color:#777;font-size:10px;line-height:1.6;margin-top:14px}
+.error{color:#ff8080;font-size:11px;margin-top:10px;min-height:16px}
+.empty{border:1px solid var(--line);padding:40px;color:#888;line-height:1.6}
+.empty a{color:#ddd;text-decoration:underline}
+.thankyou{text-align:center;padding:70px 20px}
+.thankyou h2{font-size:clamp(34px,5vw,54px);text-transform:uppercase;letter-spacing:-.05em;margin:0 0 16px}
+.thankyou p{color:#aaa;font-size:14px;line-height:1.6;max-width:480px;margin:0 auto}
+.orderId{display:inline-block;margin-top:18px;padding:8px 14px;border:1px solid #444;font-size:12px;letter-spacing:.08em}
+</style></head>
+<body>
+<header class="top"><a class="logo" href="/">6PACKWEAR</a></header>
+<main class="wrap">
+  <a class="back" href="/cart.html">← Back to bag</a>
+  <div class="kicker">Final step</div>
+  <h1 class="title">Checkout</h1>
+  <div id="app"></div>
+</main>
+<script src="/cart.js?v=20260912-1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/auth.js?v=20260912-1"></script>
+<script>
+const SB_URL='https://boaqzdyfsosswqvjgsjn.supabase.co',SB_KEY='sb_publishable_'+'JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky';
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const money=n=>'$'+Number(n||0).toFixed(2);
+const app=document.getElementById('app');
+
+function renderEmpty(){
+  app.innerHTML='<div class="empty">Your bag is empty — nothing to check out.<br><br><a href="/catalog.html">CONTINUE SHOPPING →</a></div>';
+}
+
+function renderForm(cart){
+  let subtotal=0;
+  const lines=cart.map(x=>{
+    const p=x.product||{};
+    const lineTotal=Number(p.price||0)*Number(x.quantity||1);
+    subtotal+=lineTotal;
+    return `<div class="line"><div><div>${esc(p.name||'Product')}</div><div class="meta">${esc(p.brand||'6PACKWEAR')} · ${esc(x.size||'One size')} · x${Number(x.quantity||1)}</div></div><div>${money(lineTotal)}</div></div>`;
+  }).join('');
+  app.innerHTML=`
+    <div class="grid">
+      <div class="card">
+        <h2>Contact & delivery</h2>
+        <form id="checkoutForm">
+          <div class="field"><label>Full name *</label><input id="cName" required></div>
+          <div class="field"><label>Phone *</label><input id="cPhone" type="tel" placeholder="+380..." required></div>
+          <div class="field"><label>City *</label><input id="cCity" required></div>
+          <div class="field"><label>Delivery address / Nova Poshta branch *</label><input id="cAddress" required></div>
+          <div class="field"><label>Comment (optional)</label><textarea id="cComment"></textarea></div>
+          <button class="submit" id="submitBtn" type="submit">Place order</button>
+          <div class="error" id="err"></div>
+          <div class="note">No online payment yet — after you place the order we'll contact you by phone to confirm details and arrange payment.</div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Order summary</h2>
+        ${lines}
+        <div class="totalRow"><span>Total</span><span>${money(subtotal)}</span></div>
+      </div>
+    </div>`;
+
+  document.getElementById('checkoutForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const btn=document.getElementById('submitBtn'), err=document.getElementById('err');
+    err.textContent='';
+    const name=document.getElementById('cName').value.trim();
+    const phone=document.getElementById('cPhone').value.trim();
+    const city=document.getElementById('cCity').value.trim();
+    const address=document.getElementById('cAddress').value.trim();
+    const comment=document.getElementById('cComment').value.trim();
+    if(!name||!phone||!city||!address){err.textContent='Please fill in all required fields.';return}
+    btn.disabled=true;btn.textContent='Placing order…';
+    try{
+      const sb=window.supabase||await window.sixpackCart.loadSupabase();
+      if(!sb?.createClient)throw new Error('SUPABASE_UNAVAILABLE');
+      const db=sb.createClient(SB_URL,SB_KEY);
+      let userId=null;
+      try{ if(window.sixpackAuthState){ const u=await window.sixpackAuthState(); userId=u?.id||null; } }catch{}
+      const orderId=(crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2)));
+      const orderRow={
+        id:orderId, user_id:userId, status:'pending', currency:'USD',
+        subtotal:Number(subtotal.toFixed(2)), shipping:0, total:Number(subtotal.toFixed(2)),
+        customer_name:name, phone, city, delivery_address:address, comment:comment||null
+      };
+      const ins1=await db.from('orders').insert(orderRow);
+      if(ins1.error) throw ins1.error;
+      const itemRows=cart.map(x=>{
+        const p=x.product||{};
+        return {
+          order_id:orderId, product_id:p.id||null, product_name:p.name||'Product',
+          brand:p.brand||null, size:x.size||null, quantity:Number(x.quantity||1),
+          unit_price:Number(p.price||0), line_total:Number((Number(p.price||0)*Number(x.quantity||1)).toFixed(2))
+        };
+      });
+      const ins2=await db.from('order_items').insert(itemRows);
+      if(ins2.error) throw ins2.error;
+      localStorage.setItem('sixpack_guest_cart','[]');
+      window.dispatchEvent(new CustomEvent('sixpack:cart',{detail:[]}));
+      app.innerHTML=`<div class="thankyou"><h2>Order received</h2><p>Thank you, ${esc(name)}. We'll call you at ${esc(phone)} shortly to confirm your order and arrange payment.</p><div class="orderId">Order #${esc(orderId.slice(0,8).toUpperCase())}</div><br><br><a href="/catalog.html" style="text-decoration:underline">Continue shopping →</a></div>`;
+    }catch(ex){
+      console.error(ex);
+      err.textContent='Could not place the order. Please try again in a moment.';
+      btn.disabled=false;btn.textContent='Place order';
+    }
+  });
+}
+
+(function init(){
+  const cart=window.sixpackCart?.getCart?.()||[];
+  if(!cart.length) renderEmpty(); else renderForm(cart);
+})();
+</script>
+</body></html>
