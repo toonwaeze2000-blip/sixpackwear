@@ -1,4 +1,317 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>6PACKWEAR Admin MVP</title><style>body{margin:0;background:#050505;color:#eee;font-family:Arial,sans-serif}.wrap{max-width:1200px;margin:auto;padding:32px}.head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #252525;padding-bottom:22px}.logo{font-size:24px;font-weight:900}.muted{color:#888}.tabs{display:flex;gap:8px;margin:24px 0}.tab{background:#101010;color:#aaa;border:1px solid #292929;padding:10px 14px;cursor:pointer}.tab.active{background:#eee;color:#000}.panel{display:none}.panel.active{display:block}.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field input,.field select,.field textarea{background:#0e0e0e;border:1px solid #303030;color:#eee;padding:12px}.btn{background:#eee;color:#000;border:0;padding:12px 16px;font-weight:800;cursor:pointer}.danger{background:#2a1515;color:#fff;border:1px solid #4a2222}.table{margin-top:24px;border-top:1px solid #252525}.row{display:grid;grid-template-columns:1.2fr .8fr .7fr .7fr auto;gap:12px;padding:14px 0;border-bottom:1px solid #1d1d1d;align-items:center}.stat{display:inline-block;border:1px solid #272727;padding:10px 12px;margin-right:8px}.note{padding:14px 0;color:#8c8c86;line-height:1.5}@media(max-width:700px){.form{grid-template-columns:1fr}.field.full{grid-column:auto}.row{grid-template-columns:1fr}.head{display:block}.head .muted{margin-top:8px}}</style></head><body><div class="wrap"><div class="head"><div class="logo">6PACK<span style="font-weight:400;color:#999">WEAR</span> / ADMIN</div><div class="muted">MVP catalog manager</div></div><div class="tabs"><button class="tab active" data-tab="products">Products</button><button class="tab" data-tab="looks">Looks</button><button class="tab" data-tab="orders">Orders</button></div><section class="panel active" id="products"><h2>Products</h2><div><span class="stat" id="productCount">0 products</span><span class="stat" id="stockCount">0 in stock</span></div><div class="note">This first admin layer is client-side. It stores draft edits in this browser; production-wide persistence will require the backend/database stage.</div><form class="form" id="productForm"><div class="field"><label>Name</label><input id="pName" required></div><div class="field"><label>Brand</label><input id="pBrand" required></div><div class="field"><label>Category</label><select id="pCategory"><option>Clothing</option><option>Sneakers</option><option>Outerwear</option><option>Accessories</option></select></div><div class="field"><label>Style</label><select id="pStyle"><option>Streetwear</option><option>Luxury</option><option>Casual</option><option>Sport</option><option>Affordable</option></select></div><div class="field"><label>Price USD</label><input id="pPrice" type="number" min="0" required></div><div class="field"><label>Stock</label><input id="pStock" type="number" min="0" required></div><div class="field"><label>Sizes</label><input id="pSizes" placeholder="S,M,L,XL"></div><div class="field"><label>Color</label><input id="pColor" placeholder="Black"></div><div class="field full"><label>Image URL</label><input id="pImage" placeholder="/assets/...png"></div><div class="field full"><button class="btn" type="submit">Add Product</button></div></form><div class="table" id="productTable"></div></section><section class="panel" id="looks"><h2>Looks</h2><div class="note">A LOOK is a curated set of product IDs. The production builder will use these relationships to let shoppers remove, replace and buy pieces individually.</div><div class="table" id="lookTable"></div></section><section class="panel" id="orders"><h2>Orders</h2><div class="note">Order workflow is prepared conceptually: Pending → Paid → Processing → Shipped → Delivered. Payment and database persistence come in the backend stage.</div><div class="table"><div class="row"><b>Order #</b><b>Status</b><b>Total</b><b>Customer</b><b></b></div><div class="row"><span>1024</span><span>Demo</span><span>$420</span><span>—</span><span class="muted">Ready for backend</span></div></div></section></div><script>
-const seed=[{"id":"p001","name":"Oversized Essential Tee","brand":"Essentials","category":"Clothing","style":"Streetwear","price":65,"stock":12,"sizes":["S","M","L","XL"],"color":"Black","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png"},{"id":"p002","name":"Cargo Trouser","brand":"Carhartt","category":"Clothing","style":"Streetwear","price":120,"stock":7,"sizes":["S","M","L","XL"],"color":"Charcoal","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png"},{"id":"p003","name":"New Balance Runner","brand":"New Balance","category":"Sneakers","style":"Sport","price":190,"stock":5,"sizes":["40","41","42","43","44","45"],"color":"Grey","image":"/d2060b27-276c-44c6-89d1-860f5908fb0b.png"}];let products=JSON.parse(localStorage.getItem('6pw-products')||'null')||seed;function save(){localStorage.setItem('6pw-products',JSON.stringify(products));render()}function render(){document.getElementById('productCount').textContent=products.length+' products';document.getElementById('stockCount').textContent=products.reduce((a,x)=>a+Number(x.stock||0),0)+' in stock';document.getElementById('productTable').innerHTML='<div class="row"><b>Name</b><b>Brand</b><b>Price</b><b>Stock</b><b>Action</b></div>'+products.map((p,i)=>`<div class="row"><span>${p.name}</span><span>${p.brand}</span><span>$${p.price}</span><span>${p.stock}</span><button class="tab danger" onclick="removeProduct(${i})">Delete</button></div>`).join('');document.getElementById('lookTable').innerHTML=['City Uniform','Clean Everyday','Runway Form','After Hours'].map(x=>`<div class="row"><b>${x}</b><span>3 pieces</span><span>LOOK</span><span class="muted">Product relations ready</span><span>→</span></div>`).join('')}function removeProduct(i){products.splice(i,1);save()}document.getElementById('productForm').addEventListener('submit',e=>{e.preventDefault();const p={id:'p'+Date.now().toString(36),name:pName.value,brand:pBrand.value,category:pCategory.value,style:pStyle.value,price:Number(pPrice.value),stock:Number(pStock.value),sizes:pSizes.value.split(',').map(x=>x.trim()).filter(Boolean),color:pColor.value,image:pImage.value||'/d2060b27-276c-44c6-89d1-860f5908fb0b.png'};products.push(p);save();e.target.reset()});document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active')}));render();
-</script></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>6PACKWEAR — Admin</title>
+<style>
+:root{--bg:#050505;--panel:#0e0e0e;--line:#272727;--text:#eee;--muted:#8c8c86}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+a{color:inherit}
+.wrap{max-width:1200px;margin:auto;padding:32px 24px 80px}
+.head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:22px;gap:16px;flex-wrap:wrap}
+.logo{font-size:24px;font-weight:900}
+.logo span{font-weight:400;color:#999}
+.muted{color:var(--muted)}
+.small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tabs{display:flex;gap:8px;margin:24px 0}
+.tab{background:#101010;color:#aaa;border:1px solid var(--line);padding:10px 16px;cursor:pointer;font-size:13px}
+.tab.active{background:#eee;color:#000}
+.panel{display:none}
+.panel.active{display:block}
+.form{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;background:var(--panel);border:1px solid var(--line);padding:20px;margin-bottom:20px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.field input,.field select,.field textarea{background:#161616;border:1px solid #333;color:#eee;padding:11px;font:inherit;outline:0}
+.field textarea{min-height:60px;resize:vertical}
+.formActions{grid-column:1/-1;display:flex;align-items:center;gap:16px}
+.btn{background:#eee;color:#000;border:0;padding:12px 18px;font-weight:800;cursor:pointer;font-size:13px}
+.btn.danger{background:#2a1515;color:#fff;border:1px solid #4a2222}
+.btn.ghost{background:transparent;color:#eee;border:1px solid #444}
+.linklike{background:none;border:0;color:#9ad;text-decoration:underline;cursor:pointer;padding:0;font:inherit}
+.msg{font-size:12px;min-height:16px}
+.msg.err{color:#ff8080}
+.msg.ok{color:#8fd18f}
+.stats{display:flex;gap:10px;margin:18px 0;flex-wrap:wrap}
+.stat{border:1px solid var(--line);padding:10px 14px;font-size:12px}
+.stat b{display:block;font-size:18px}
+.table{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:56px 1.4fr 1fr .9fr .6fr .6fr 1fr auto auto;gap:12px;padding:12px 0;border-bottom:1px solid #1d1d1d;align-items:center;font-size:13px}
+.row.headRow{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.thumb{width:44px;height:44px;object-fit:cover;background:#161616;border:1px solid #262626}
+.note{padding:14px 0;color:var(--muted);line-height:1.6;font-size:13px}
+.gateBox{max-width:520px;margin:60px auto;text-align:center;border:1px solid var(--line);padding:44px 30px;background:var(--panel)}
+.gateBox h2{margin:0 0 12px}
+.gateBox p{color:#bbb;line-height:1.6}
+.gateBox .btn{display:inline-block;text-decoration:none;margin-top:16px}
+.orderCard{border:1px solid var(--line);background:var(--panel);margin-bottom:14px}
+.orderHead{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;gap:14px;flex-wrap:wrap}
+.orderId{font-weight:800;letter-spacing:.04em}
+.orderDate{color:var(--muted);font-size:12px}
+.orderTotal{font-weight:800}
+.orderBody{padding:0 16px 16px;font-size:13px;color:#ccc;line-height:1.7}
+.orderBody b{color:#fff}
+.itemsBox{margin-top:10px;border-top:1px solid #1d1d1d;padding-top:10px}
+.itemLine{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#bbb}
+.statusSelect{background:#161616;border:1px solid #333;color:#eee;padding:8px 10px;font:inherit}
+.pill{display:inline-block;padding:3px 9px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;border:1px solid #444}
+.pill.pending{color:#ffcf6b;border-color:#5a4a26}
+.pill.paid{color:#8fd1ff;border-color:#264a5a}
+.pill.processing{color:#c6a8ff;border-color:#3d2a5a}
+.pill.shipped{color:#9ad0a0;border-color:#2a4a2f}
+.pill.delivered{color:#8fd18f;border-color:#245a26}
+.pill.cancelled{color:#ff8f8f;border-color:#5a2626}
+@media(max-width:900px){.form{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr 1fr;grid-auto-rows:auto}.row.headRow{display:none}}
+@media(max-width:520px){.form{grid-template-columns:1fr}}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="logo">6PACK<span>WEAR</span> / ADMIN</div>
+    <div class="small" id="whoami">Checking access…</div>
+  </div>
+  <div id="gate"></div>
+  <div id="app" style="display:none">
+    <div class="tabs">
+      <button class="tab active" data-tab="products">Products</button>
+      <button class="tab" data-tab="orders">Orders</button>
+    </div>
+
+    <section class="panel active" id="products">
+      <div class="stats">
+        <div class="stat"><span class="muted">Products</span><b id="statProducts">0</b></div>
+        <div class="stat"><span class="muted">Units in stock</span><b id="statStock">0</b></div>
+      </div>
+      <form class="form" id="productForm">
+        <div class="field"><label>Name *</label><input id="pName" required></div>
+        <div class="field"><label>Brand *</label><input id="pBrand" list="brandList" required></div>
+        <div class="field"><label>Category *</label><input id="pCategory" list="categoryList" required></div>
+        <div class="field"><label>Style</label><input id="pStyle" list="styleList"></div>
+        <div class="field"><label>Price USD *</label><input id="pPrice" type="number" step="0.01" min="0" required></div>
+        <div class="field"><label>Stock *</label><input id="pStock" type="number" min="0" required></div>
+        <div class="field"><label>Sizes</label><input id="pSizes" placeholder="S,M,L,XL"></div>
+        <div class="field"><label>Color</label><input id="pColor" list="colorList"></div>
+        <div class="field full"><label>Image URL</label><input id="pImage" placeholder="https://... or /assets/..."></div>
+        <div class="formActions">
+          <button class="btn" type="submit" id="productSubmitBtn">Add product</button>
+          <button class="linklike" type="button" id="cancelEdit" style="display:none">Cancel edit</button>
+          <span class="msg" id="productMsg"></span>
+        </div>
+      </form>
+      <datalist id="brandList"></datalist>
+      <datalist id="categoryList"></datalist>
+      <datalist id="styleList"></datalist>
+      <datalist id="colorList"></datalist>
+      <div class="table" id="productTable"></div>
+    </section>
+
+    <section class="panel" id="orders">
+      <div class="stats">
+        <div class="stat"><span class="muted">Orders</span><b id="statOrders">0</b></div>
+        <div class="stat"><span class="muted">Pending</span><b id="statPending">0</b></div>
+      </div>
+      <div class="note">Orders come in as "pending" from checkout — no online payment yet. Call the customer to confirm and arrange payment, then move the order forward here.</div>
+      <div id="ordersList"></div>
+    </section>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/auth.js?v=20260912-1"></script>
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const money=n=>'$'+Number(n||0).toFixed(2);
+const STATUSES=['pending','paid','processing','shipped','delivered','cancelled'];
+const gate=document.getElementById('gate'),app=document.getElementById('app'),whoami=document.getElementById('whoami');
+function showGate(html){gate.innerHTML='<div class="gateBox">'+html+'</div>';gate.style.display='block';app.style.display='none'}
+
+let db=null,editingId=null;
+
+async function initProducts(){
+  const msg=document.getElementById('productMsg');
+  const form=document.getElementById('productForm');
+  const cancelBtn=document.getElementById('cancelEdit');
+  const submitBtn=document.getElementById('productSubmitBtn');
+  let products=[];
+
+  function fillDatalists(){
+    const uniq=k=>[...new Set(products.map(p=>p[k]).filter(Boolean))].sort();
+    document.getElementById('brandList').innerHTML=uniq('brand').map(v=>`<option value="${esc(v)}">`).join('');
+    document.getElementById('categoryList').innerHTML=uniq('category').map(v=>`<option value="${esc(v)}">`).join('');
+    document.getElementById('styleList').innerHTML=uniq('style').map(v=>`<option value="${esc(v)}">`).join('');
+    document.getElementById('colorList').innerHTML=uniq('color').map(v=>`<option value="${esc(v)}">`).join('');
+  }
+
+  function renderTable(){
+    document.getElementById('statProducts').textContent=products.length;
+    document.getElementById('statStock').textContent=products.reduce((a,x)=>a+Number(x.stock||0),0);
+    const head='<div class="row headRow"><span></span><span>Name</span><span>Brand</span><span>Category</span><span>Price</span><span>Stock</span><span>Sizes</span><span></span><span></span></div>';
+    document.getElementById('productTable').innerHTML=head+products.map(p=>`
+      <div class="row">
+        <img class="thumb" src="${esc(p.image||'')}" onerror="this.style.visibility='hidden'">
+        <span>${esc(p.name)}</span>
+        <span>${esc(p.brand||'')}</span>
+        <span>${esc(p.category||'')}</span>
+        <span>${money(p.price)}</span>
+        <span>${Number(p.stock||0)}</span>
+        <span>${esc((p.sizes||[]).join(', '))}</span>
+        <button class="btn ghost" data-edit="${esc(p.id)}">Edit</button>
+        <button class="btn danger" data-del="${esc(p.id)}">Delete</button>
+      </div>`).join('');
+    document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>startEdit(b.dataset.edit));
+    document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>doDelete(b.dataset.del));
+  }
+
+  async function loadProducts(){
+    const r=await db.from('products').select('*').order('created_at',{ascending:false});
+    if(r.error){msg.className='msg err';msg.textContent='Could not load products: '+r.error.message;return}
+    products=r.data||[];
+    fillDatalists();
+    renderTable();
+  }
+
+  function startEdit(id){
+    const p=products.find(x=>String(x.id)===String(id));
+    if(!p)return;
+    editingId=p.id;
+    document.getElementById('pName').value=p.name||'';
+    document.getElementById('pBrand').value=p.brand||'';
+    document.getElementById('pCategory').value=p.category||'';
+    document.getElementById('pStyle').value=p.style||'';
+    document.getElementById('pPrice').value=p.price??'';
+    document.getElementById('pStock').value=p.stock??'';
+    document.getElementById('pSizes').value=(p.sizes||[]).join(',');
+    document.getElementById('pColor').value=p.color||'';
+    document.getElementById('pImage').value=p.image||'';
+    submitBtn.textContent='Update product';
+    cancelBtn.style.display='inline';
+    msg.className='msg';msg.textContent='';
+    form.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function resetForm(){
+    editingId=null;
+    form.reset();
+    submitBtn.textContent='Add product';
+    cancelBtn.style.display='none';
+  }
+  cancelBtn.onclick=resetForm;
+
+  async function doDelete(id){
+    const p=products.find(x=>String(x.id)===String(id));
+    if(!p)return;
+    if(!confirm(`Delete "${p.name}"? This cannot be undone.`))return;
+    const r=await db.from('products').delete().eq('id',id);
+    if(r.error){msg.className='msg err';msg.textContent='Could not delete: '+r.error.message;return}
+    if(editingId===id)resetForm();
+    await loadProducts();
+  }
+
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    msg.className='msg';msg.textContent='Saving…';
+    const payload={
+      name:document.getElementById('pName').value.trim(),
+      brand:document.getElementById('pBrand').value.trim(),
+      category:document.getElementById('pCategory').value.trim(),
+      style:document.getElementById('pStyle').value.trim()||null,
+      price:Number(document.getElementById('pPrice').value||0),
+      stock:Number(document.getElementById('pStock').value||0),
+      sizes:document.getElementById('pSizes').value.split(',').map(x=>x.trim()).filter(Boolean),
+      color:document.getElementById('pColor').value.trim()||null,
+      image:document.getElementById('pImage').value.trim()||null
+    };
+    if(!payload.name||!payload.brand||!payload.category){msg.className='msg err';msg.textContent='Name, brand and category are required.';return}
+    const r=editingId?await db.from('products').update(payload).eq('id',editingId):await db.from('products').insert(payload);
+    if(r.error){msg.className='msg err';msg.textContent='Could not save: '+r.error.message;return}
+    msg.className='msg ok';msg.textContent=editingId?'Product updated.':'Product added.';
+    resetForm();
+    await loadProducts();
+  });
+
+  await loadProducts();
+}
+
+async function initOrders(){
+  const list=document.getElementById('ordersList');
+  async function load(){
+    const r=await db.from('orders').select('*').order('created_at',{ascending:false});
+    if(r.error){list.innerHTML='<div class="note">Could not load orders: '+esc(r.error.message)+'</div>';return}
+    const orders=r.data||[];
+    document.getElementById('statOrders').textContent=orders.length;
+    document.getElementById('statPending').textContent=orders.filter(o=>o.status==='pending').length;
+    if(!orders.length){list.innerHTML='<div class="note">No orders yet.</div>';return}
+    list.innerHTML=orders.map(o=>`
+      <div class="orderCard" data-order="${esc(o.id)}">
+        <div class="orderHead">
+          <div><span class="orderId">#${esc(String(o.id).slice(0,8).toUpperCase())}</span> <span class="pill ${esc(o.status)}">${esc(o.status)}</span></div>
+          <div class="orderDate">${o.created_at?new Date(o.created_at).toLocaleString():''}</div>
+          <div class="orderTotal">${money(o.total)}</div>
+          <select class="statusSelect" data-status="${esc(o.id)}">
+            ${STATUSES.map(s=>`<option value="${s}" ${s===o.status?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="orderBody">
+          <div><b>${esc(o.customer_name||'—')}</b> · <a href="tel:${esc(o.phone||'')}">${esc(o.phone||'—')}</a></div>
+          <div>${esc(o.city||'')}${o.city&&o.delivery_address?', ':''}${esc(o.delivery_address||'')}</div>
+          ${o.comment?`<div class="muted">Comment: ${esc(o.comment)}</div>`:''}
+          <button class="linklike" data-items="${esc(o.id)}">Show items ▾</button>
+          <div class="itemsBox" id="items-${esc(o.id)}" style="display:none"></div>
+        </div>
+      </div>`).join('');
+
+    document.querySelectorAll('[data-status]').forEach(sel=>sel.onchange=async()=>{
+      const id=sel.dataset.status,newStatus=sel.value;
+      sel.disabled=true;
+      const r2=await db.from('orders').update({status:newStatus}).eq('id',id);
+      sel.disabled=false;
+      if(r2.error){alert('Could not update status: '+r2.error.message);return}
+      const card=document.querySelector(`.orderCard[data-order="${CSS.escape(id)}"] .pill`);
+      if(card){card.className='pill '+newStatus;card.textContent=newStatus}
+    });
+
+    document.querySelectorAll('[data-items]').forEach(btn=>btn.onclick=async()=>{
+      const id=btn.dataset.items;
+      const box=document.getElementById('items-'+id);
+      if(box.style.display==='block'){box.style.display='none';btn.textContent='Show items ▾';return}
+      box.style.display='block';btn.textContent='Hide items ▴';
+      if(box.dataset.loaded)return;
+      box.dataset.loaded='1';
+      const r3=await db.from('order_items').select('*').eq('order_id',id);
+      if(r3.error){box.innerHTML='Could not load items: '+esc(r3.error.message);return}
+      box.innerHTML=(r3.data||[]).map(it=>`<div class="itemLine"><span>${esc(it.name||'Product')} ${it.size?'· '+esc(it.size):''} × ${Number(it.quantity||1)}</span><span>${money(Number(it.price||0)*Number(it.quantity||1))}</span></div>`).join('')||'<div class="itemLine">No line items found.</div>';
+    });
+  }
+  await load();
+}
+
+(async function init(){
+  let user=null;
+  try{ user=window.sixpackAuthState?await window.sixpackAuthState():null; }catch{}
+  if(!user){
+    whoami.textContent='Not signed in';
+    showGate('<h2>Sign in required</h2><p>This page is restricted to store administrators.</p><a class="btn" href="/?auth=login&next=%2Fadmin.html">SIGN IN</a>');
+    return;
+  }
+  db=window.sixpackAuth;
+  let role=null;
+  try{
+    const r=await db.from('profiles').select('role').eq('id',user.id).single();
+    role=r.data?.role||null;
+  }catch{}
+  if(role!=='admin'){
+    whoami.textContent=user.email||'';
+    showGate(`<h2>Access denied</h2><p>Signed in as ${esc(user.email||'')}, but this account does not have admin access.</p>`);
+    return;
+  }
+  whoami.textContent='Admin · '+(user.email||'');
+  gate.style.display='none';
+  app.style.display='block';
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.tab).classList.add('active');
+  });
+  await initProducts();
+  await initOrders();
+})();
+</script>
+</body></html>
