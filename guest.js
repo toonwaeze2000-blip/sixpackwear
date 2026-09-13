@@ -84,7 +84,7 @@
         const meta=card.querySelector('.meta');
         const price=card.querySelector('.row span');
         const add=card.querySelector('.add');
-        if(img){img.src=p.image;img.alt=p.name||spec.title;img.loading='lazy';img.style.filter='none';}
+        if(img){img.src=p.image;img.alt=p.name||spec.title;img.loading='lazy';}
         if(brand)brand.textContent=[p.brand||'6PACKWEAR',p.category||'MEN'].join(' · ');
         if(h3)h3.textContent=spec.title;
         if(meta)meta.textContent=spec.meta;
