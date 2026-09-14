@@ -196,6 +196,25 @@
       setTimeout(()=>grid.querySelectorAll('.luxuryLiveCard').forEach(x=>x.classList.remove('swap')),290);
     };
 
+    // Only rotate cards whose photo actually loads, so shoppers see real product images
+    // instead of the brand-initial placeholder whenever a photo is available at all.
+    const imageLoads=url=>new Promise(resolve=>{
+      if(!url){resolve(false);return}
+      const im=new Image();
+      let done=false;
+      const finish=v=>{if(done)return;done=true;resolve(v)};
+      im.onload=()=>finish(true);
+      im.onerror=()=>finish(false);
+      im.src=url;
+      setTimeout(()=>finish(false),4000);
+    });
+    const withPhotos=async list=>{
+      const withUrl=list.filter(x=>x.image);
+      if(!withUrl.length)return [];
+      const checked=await Promise.all(withUrl.map(async x=>({item:x,ok:await imageLoads(x.image)})));
+      return checked.filter(c=>c.ok).map(c=>c.item);
+    };
+
     try{
       const feedUrl='https://boaqzdyfsosswqvjgsjn.supabase.co/functions/v1/brand-live-feed';
       const r=await fetch(feedUrl,{headers:{apikey:'sb_publishable_JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky'}});
@@ -203,6 +222,8 @@
       const payload=await r.json();
       let items=Array.isArray(payload.items)?payload.items.filter(x=>x?.brand&&x?.url):[];
       if(!items.length)throw new Error('NO_LIVE_ITEMS');
+      const photoItems=await withPhotos(items);
+      if(photoItems.length)items=photoItems;
       status.textContent='LIVE · OFFICIAL PAGES';
       const usable=items.length<4?[...items,...items,...items].slice(0,4):items;
       let offset=0;
@@ -216,7 +237,11 @@
           const rr=await fetch(feedUrl,{headers:{apikey:'sb_publishable_JlneB01f5LDJ4VBO_n1E7Q_jXn5JBky'}});
           if(!rr.ok)return;
           const next=await rr.json();
-          if(Array.isArray(next.items)&&next.items.length)items=next.items.filter(x=>x?.brand&&x?.url);
+          if(Array.isArray(next.items)&&next.items.length){
+            const nextItems=next.items.filter(x=>x?.brand&&x?.url);
+            const nextPhotos=await withPhotos(nextItems);
+            items=nextPhotos.length?nextPhotos:nextItems;
+          }
         }catch{}
       },5*60*1000);
     }catch(err){
