@@ -120,6 +120,7 @@
       </div>
       <div class="luxuryTicker" aria-hidden="true"><div class="luxuryTickerTrack">BALENCIAGA · LOUIS VUITTON · PRADA · GUCCI · DIOR · SAINT LAURENT · MONCLER · BURBERRY · BALENCIAGA · LOUIS VUITTON · PRADA · GUCCI · DIOR · SAINT LAURENT · MONCLER · BURBERRY ·</div></div>
       <div class="luxuryLiveGrid" id="luxuryLiveGrid"></div>
+      <div class="luxuryLiveDots" id="luxuryLiveDots"></div>
       <div class="luxuryLiveNote">Live feed from official brand pages · refreshes automatically · opens the official house site</div>`;
 
     const style=document.createElement('style');
@@ -135,20 +136,24 @@
       .luxuryTickerTrack{display:inline-block;min-width:max-content;padding:15px 0;color:#777;font-size:9px;letter-spacing:.19em;text-transform:uppercase;animation:luxTicker 30s linear infinite}
       @keyframes luxTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
       .luxuryLiveGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
-      .luxuryLiveCard{position:relative;min-height:350px;background:#0b0b0b;border:1px solid #292929;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;opacity:1;transform:translateY(0);transition:opacity .35s,transform .35s,border-color .2s}
+      .luxuryLiveCard{position:relative;min-height:350px;background:#0b0b0b;border:1px solid #292929;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;justify-content:flex-end;opacity:1;transform:translateY(0);transition:opacity .35s,transform .35s,border-color .2s,box-shadow .25s}
       .luxuryLiveCard.swap{opacity:0;transform:translateY(10px)}
-      .luxuryLiveCard:hover{border-color:#555}
-      .luxuryLiveImage{position:absolute;inset:0;background:linear-gradient(150deg,#141414,#060606);display:flex;align-items:center;justify-content:center;overflow:hidden}
-      .luxuryLiveImage img{width:100%;height:100%;object-fit:cover;display:block;opacity:.8;filter:grayscale(.15);transform:scale(1.01)}
-      .luxuryLiveImage.noImage:after{content:'6PACKWEAR / LIVE';font-size:10px;letter-spacing:.22em;color:#555;text-transform:uppercase}
-      .luxuryLiveShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.02) 30%,rgba(0,0,0,.88) 100%)}
-      .luxuryLiveBody{position:relative;z-index:2;padding:24px}
-      .luxuryLiveBrand{font-size:11px;font-weight:900;letter-spacing:.09em;color:#fff}
-      .luxuryLiveLabel{margin-top:8px;font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:#cfcfca}
-      .luxuryLiveTitle{margin-top:9px;font-size:17px;line-height:1.25;color:#fff;max-width:320px}
-      .luxuryLiveCount{margin-top:8px;font-size:10px;color:#999}
-      .luxuryLiveArrow{position:absolute;right:18px;top:18px;z-index:3;color:#fff;font-size:19px}
-      .luxuryLiveNote{margin-top:13px;color:#686868;font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+      .luxuryLiveCard:hover{border-color:#555;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+      .luxuryLiveImage{position:absolute;inset:0;background:linear-gradient(150deg,#141414,#060606);overflow:hidden}
+      .luxuryLiveImage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.8;filter:grayscale(.15);transform:scale(1.01)}
+      .luxuryLiveMono{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:190px;font-weight:900;letter-spacing:-.04em;color:rgba(244,244,240,.055);line-height:1;user-select:none;background:radial-gradient(circle at 28% 22%,rgba(244,244,240,.05),transparent 62%)}
+      .luxuryLiveShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 26%,rgba(0,0,0,.9) 100%)}
+      .luxuryLiveBody{position:relative;z-index:2;padding:26px}
+      .luxuryLiveBrand{font-size:12px;font-weight:900;letter-spacing:.1em;color:#fff}
+      .luxuryLiveLabel{margin-top:9px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#9d9d97}
+      .luxuryLiveTitle{margin-top:10px;font-size:18px;line-height:1.28;color:#f4f4f0;max-width:320px;font-weight:500}
+      .luxuryLiveCount{margin-top:9px;font-size:10px;color:#8f8f8f;letter-spacing:.03em}
+      .luxuryLiveArrow{position:absolute;right:16px;top:16px;z-index:3;width:34px;height:34px;border-radius:50%;background:rgba(5,5,5,.55);backdrop-filter:blur(4px);border:1px solid rgba(244,244,240,.18);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;transition:background .2s,border-color .2s,transform .2s}
+      .luxuryLiveCard:hover .luxuryLiveArrow{background:rgba(244,244,240,.14);border-color:rgba(244,244,240,.45);transform:scale(1.06)}
+      .luxuryLiveDots{display:flex;gap:6px;justify-content:center;margin-top:22px}
+      .luxuryDot{width:5px;height:5px;border-radius:50%;background:#302f2c;transition:background .3s,transform .3s}
+      .luxuryDot.active{background:#f4f4f0;transform:scale(1.3)}
+      .luxuryLiveNote{margin-top:16px;color:#686868;font-size:9px;letter-spacing:.08em;text-transform:uppercase;text-align:center}
       @media(max-width:900px){.luxuryLiveGrid{grid-template-columns:repeat(2,1fr)}.luxuryLiveHead{display:block}.luxuryLiveStatus{margin-top:18px}}
       @media(max-width:560px){.luxuryLiveGrid{grid-template-columns:1fr}.luxuryLiveCard{min-height:300px}.luxuryLiveSection{padding-top:58px}}
     `;
@@ -163,7 +168,7 @@
     // scraper (bot protection, geo-block, rate limit) it returns an "Access Denied"-style page,
     // and that raw denial text was leaking straight into the card as if it were real content.
     // Detect that case and fall back to a safe generic title instead of showing it to shoppers.
-    const looksBlocked=s=>/access denied|forbidden|captcha|are you a robot|verify you are human|unable to (access|retrieve|load)|blocked|please enable (javascript|cookies)|return at a later time|something went wrong|service unavailable|rate limit/i.test(String(s||''));
+    const looksBlocked=s=>/access denied|forbidden|captcha|are you a robot|verify you are human|unable to (access|retrieve|load)|blocked|please enable (javascript|cookies)|return at a later time|something went wrong|service unavailable|rate limit|page (unavailable|not found)|not found|404|no longer available|temporarily unavailable|try again|error/i.test(String(s||''));
     const safeTitle=item=>{
       const raw=item.title||'';
       if(!raw||looksBlocked(raw))return 'Official new-in edit';
@@ -179,11 +184,14 @@
       grid.querySelectorAll('.luxuryLiveCard').forEach(x=>x.classList.add('swap'));
       setTimeout(()=>{
         grid.innerHTML=visible.map(item=>{
-          const img=item.image?`<img src="${String(item.image).replace(/"/g,'&quot;')}" alt="" loading="lazy" onerror="this.parentElement.classList.add('noImage');this.remove()">`:'';
+          const mono=`<span class="luxuryLiveMono" aria-hidden="true">${String(item.brand||'6PW').trim().charAt(0)}</span>`;
+          const img=item.image?`<img src="${String(item.image).replace(/"/g,'&quot;')}" alt="" loading="lazy" onerror="this.remove()">`:'';
           const count=safeCount(item);
           const title=safeTitle(item).replace(/</g,'&lt;').replace(/>/g,'&gt;');
-          return `<a class="luxuryLiveCard" href="${String(item.url).replace(/"/g,'&quot;')}" target="_blank" rel="noopener noreferrer"><span class="luxuryLiveImage">${img}</span><span class="luxuryLiveShade"></span><span class="luxuryLiveArrow">↗</span><span class="luxuryLiveBody"><span class="luxuryLiveBrand">${item.brand}</span><span class="luxuryLiveLabel">${item.label||'LIVE EDIT'}</span><span class="luxuryLiveTitle">${title}</span><span class="luxuryLiveCount">${count}</span></span></a>`;
+          return `<a class="luxuryLiveCard" href="${String(item.url).replace(/"/g,'&quot;')}" target="_blank" rel="noopener noreferrer"><span class="luxuryLiveImage">${mono}${img}</span><span class="luxuryLiveShade"></span><span class="luxuryLiveArrow">↗</span><span class="luxuryLiveBody"><span class="luxuryLiveBrand">${item.brand}</span><span class="luxuryLiveLabel">${item.label||'LIVE EDIT'}</span><span class="luxuryLiveTitle">${title}</span><span class="luxuryLiveCount">${count}</span></span></a>`;
         }).join('');
+        const dotsEl=document.getElementById('luxuryLiveDots');
+        if(dotsEl)dotsEl.innerHTML=items.map((_,i)=>`<span class="luxuryDot${i===offset?' active':''}"></span>`).join('');
       },260);
       setTimeout(()=>grid.querySelectorAll('.luxuryLiveCard').forEach(x=>x.classList.remove('swap')),290);
     };
